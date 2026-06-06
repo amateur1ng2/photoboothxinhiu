@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Photobooth With Me v3 FIXED</title>
+<title>Photobooth With Me - FIXED</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -15,6 +15,7 @@ min-height:100vh;
 color:#333;
 }
 
+/* NAV */
 nav{
 position:sticky;
 top:0;
@@ -33,7 +34,7 @@ gap:20px;
 list-style:none;
 }
 
-.menu-item{position:relative;}
+.menu-item{position:relative}
 
 .menu-item>a{
 padding:10px 14px;
@@ -41,6 +42,7 @@ border-radius:20px;
 color:white !important;
 text-decoration:none;
 display:block;
+font-weight:bold;
 }
 
 .trends>a{background:#ff5c8a;}
@@ -49,6 +51,7 @@ display:block;
 .events>a{background:#ffb347;}
 .gallerym>a{background:#33c48d;}
 
+/* DROPDOWN */
 .dropdown{
 position:absolute;
 top:45px;
@@ -59,12 +62,10 @@ border-radius:12px;
 list-style:none;
 padding:8px 0;
 box-shadow:0 10px 25px rgba(0,0,0,.15);
-
 opacity:0;
 visibility:hidden;
 transition:.2s;
 z-index:9999;
-
 display:block;
 }
 
@@ -73,21 +74,23 @@ opacity:1;
 visibility:visible;
 }
 
-.dropdown li{display:block;}
+.dropdown li{display:block}
 .dropdown a{
 display:block;
 padding:10px;
 color:#333 !important;
 text-decoration:none;
 }
-.dropdown a:hover{background:#f2f2f2;}
+.dropdown a:hover{background:#f2f2f2}
 
+/* CAMERA */
 .camera-card{
-background:white;
-padding:20px;
-border-radius:20px;
+max-width:500px;
+margin:20px auto;
 position:relative;
+border-radius:20px;
 overflow:hidden;
+background:#000;
 }
 
 .photobooth-bg{
@@ -98,39 +101,28 @@ pointer-events:none;
 background:linear-gradient(135deg,#ffe4ec,#f8dfff,#dff7ff);
 }
 
-.photobooth-bg span{
-position:absolute;
-font-size:30px;
-opacity:.2;
-animation:float 8s linear infinite;
-}
-
-@keyframes float{
-0%{transform:translateY(0);opacity:0;}
-20%{opacity:.3;}
-100%{transform:translateY(-600px);opacity:0;}
-}
-
 video{
 width:100%;
+display:block;
 position:relative;
 z-index:2;
-border-radius:12px;
-background:#ddd;
+border-radius:20px;
+transform:scaleX(-1);
 }
 
 .live-badge{
 position:absolute;
 top:10px;
 left:10px;
+z-index:10;
 background:red;
 color:white;
 padding:5px 10px;
 border-radius:20px;
 font-size:12px;
-z-index:10;
 }
 
+/* CONTROLS */
 #countdown{
 font-size:60px;
 text-align:center;
@@ -140,47 +132,36 @@ color:#ff4d6d;
 
 .buttons{
 display:flex;
-gap:10px;
 justify-content:center;
-margin-top:20px;
+gap:10px;
+margin-top:15px;
 }
 
 button{
-padding:12px 20px;
+padding:12px 18px;
 border:none;
 border-radius:30px;
 cursor:pointer;
 font-weight:bold;
+touch-action:manipulation;
 }
 
-.primary{background:#ff5c8a;color:white;}
-.secondary{background:#7b61ff;color:white;}
-.dark-btn{background:#222;color:white;}
+.primary{background:#ff5c8a;color:#fff;}
+.secondary{background:#7b61ff;color:#fff;}
+.dark-btn{background:#222;color:#fff;}
 
-#photos{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-gap:10px;
-margin-top:20px;
-}
-
+/* PHOTOS */
 #photos img{
-width:100%;
+width:80px;
+margin:5px;
 border-radius:10px;
 }
 
-.gallery-grid{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-justify-content:center;
-}
-
-.gallery-grid img{
-width:160px;
+.gallery img{
+width:120px;
+margin:5px;
 border-radius:10px;
 }
-
 </style>
 </head>
 
@@ -200,18 +181,10 @@ border-radius:10px;
 
 <div class="camera-card">
 
+<div class="photobooth-bg"></div>
 <div class="live-badge">🔴 LIVE</div>
 
-<div class="photobooth-bg">
-<span>📸</span>
-<span>✨</span>
-<span>💖</span>
-<span>🌸</span>
-<span>📷</span>
-<span>🎞️</span>
-</div>
-
-<video id="video" autoplay playsinline></video>
+<video id="video" autoplay playsinline muted></video>
 </div>
 
 <div id="countdown"></div>
@@ -224,19 +197,18 @@ border-radius:10px;
 
 <div id="photos"></div>
 
-<section>
-<div class="gallery-grid" id="savedGallery"></div>
-</section>
+<h3 style="text-align:center">Gallery</h3>
+<div class="gallery" id="gallery"></div>
 
 <canvas id="canvas" style="display:none"></canvas>
 
 <script>
 const video=document.getElementById("video");
 const canvas=document.getElementById("canvas");
-const photosDiv=document.getElementById("photos");
 const countdown=document.getElementById("countdown");
+const photosDiv=document.getElementById("photos");
+const gallery=document.getElementById("gallery");
 const downloadBtn=document.getElementById("downloadBtn");
-const gallery=document.getElementById("savedGallery");
 
 let photos=[];
 let cameraStarted=false;
@@ -245,22 +217,31 @@ async function startCamera(){
 if(cameraStarted) return true;
 
 try{
-const stream=await navigator.mediaDevices.getUserMedia({video:true});
-video.srcObject=stream;
+
+const stream = await navigator.mediaDevices.getUserMedia({
+video:{ facingMode:"user" },
+audio:false
+});
+
+video.srcObject = stream;
+
+video.setAttribute("playsinline",true);
+video.muted = true;
 
 await new Promise(r=>video.onloadedmetadata=r);
-await video.play();
+await video.play().catch(()=>{});
 
 cameraStarted=true;
 return true;
 
 }catch(e){
-alert("Camera error");
+console.error(e);
+alert("Camera permission required");
 return false;
 }
 }
 
-function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
 
 function capture(){
 canvas.width=video.videoWidth;
@@ -269,7 +250,8 @@ canvas.height=video.videoHeight;
 const ctx=canvas.getContext("2d");
 ctx.drawImage(video,0,0);
 
-const img=canvas.toDataURL();
+const img=canvas.toDataURL("image/png");
+
 photos.push(img);
 
 const el=document.createElement("img");
@@ -277,7 +259,10 @@ el.src=img;
 photosDiv.appendChild(el);
 }
 
-document.getElementById("startBtn").onclick=async()=>{
+document.getElementById("startBtn").addEventListener("click", async (e)=>{
+
+e.preventDefault();
+
 const ok=await startCamera();
 if(!ok) return;
 
@@ -287,55 +272,20 @@ photosDiv.innerHTML="";
 let count=4;
 
 for(let i=0;i<count;i++){
+
 for(let c=3;c>0;c--){
 countdown.textContent=c;
 await sleep(1000);
 }
+
 countdown.textContent="📸";
 capture();
 await sleep(500);
 }
 
 countdown.textContent="";
-createStrip();
-};
 
-document.getElementById("retakeBtn").onclick=()=>{
-photos=[];
-photosDiv.innerHTML="";
-countdown.textContent="";
-downloadBtn.style.display="none";
-};
-
-function createStrip(){
-const strip=document.createElement("canvas");
-strip.width=400;
-strip.height=photos.length*260+120;
-
-const ctx=strip.getContext("2d");
-
-ctx.fillStyle="white";
-ctx.fillRect(0,0,strip.width,strip.height);
-
-let loaded=0;
-
-photos.forEach((src,i)=>{
-const img=new Image();
-
-img.onload=()=>{
-ctx.drawImage(img,25,i*260+20,350,230);
-loaded++;
-
-if(loaded===photos.length){
-
-ctx.fillStyle="#333";
-ctx.font="18px Arial";
-ctx.textAlign="center";
-
-ctx.fillText("Photobooth With Me",200,strip.height-40);
-ctx.fillText(new Date().toLocaleString(),200,strip.height-15);
-
-const url=strip.toDataURL();
+const url=canvas.toDataURL();
 
 downloadBtn.style.display="inline-block";
 
@@ -349,12 +299,14 @@ a.click();
 const g=document.createElement("img");
 g.src=url;
 gallery.prepend(g);
-}
-};
-
-img.src=src;
 });
-}
+
+document.getElementById("retakeBtn").onclick=()=>{
+photos=[];
+photosDiv.innerHTML="";
+countdown.textContent="";
+downloadBtn.style.display="none";
+};
 </script>
 
 </body>
