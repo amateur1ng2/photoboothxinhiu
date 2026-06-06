@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simple Photobooth</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f5f5f5;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    video {
+        width: 500px;
+        max-width: 100%;
+        border: 5px solid #333;
+        border-radius: 10px;
+    }
+
+    button {
+        margin: 10px;
+        padding: 12px 24px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #countdown {
+        font-size: 48px;
+        font-weight: bold;
+        color: red;
+        margin: 20px;
+        height: 60px;
+    }
+
+    #photos {
+        display: grid;
+        grid-template-columns: repeat(2, 200px);
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    #photos img {
+        width: 200px;
+        border: 3px solid #444;
+        border-radius: 8px;
+    }
+
+    #downloadBtn {
+        display: none;
+    }
+</style>
+</head>
+<body>
+
+<h1>📸 Simple Photobooth</h1>
+
+<video id="video" autoplay playsinline></video>
+
+<div id="countdown"></div>
+
+<br>
+
+<button id="startBtn">Start Photobooth</button>
+<button id="downloadBtn">Download Strip</button>
+
+<div id="photos"></div>
+
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const countdown = document.getElementById('countdown');
+const photosDiv = document.getElementById('photos');
+const downloadBtn = document.getElementById('downloadBtn');
+
+let photos = [];
+
+// Open webcam
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+    video.srcObject = stream;
+})
+.catch(err => {
+    alert("Cannot access camera: " + err);
+});
+
+document.getElementById('startBtn').addEventListener('click', async () => {
+    photos = [];
+    photosDiv.innerHTML = '';
+    downloadBtn.style.display = 'none';
+
+    for(let i = 1; i <= 4; i++) {
+
+        for(let c = 3; c > 0; c--) {
+            countdown.textContent = c;
+            await sleep(1000);
+        }
+
+        countdown.textContent = "📸";
+
+        capturePhoto();
+
+        await sleep(500);
+    }
+
+    countdown.textContent = "";
+    createPhotoStrip();
+});
+
+function sleep(ms){
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function capturePhoto() {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+
+    const imageData = canvas.toDataURL('image/png');
+    photos.push(imageData);
+
+    const img = document.createElement('img');
+    img.src = imageData;
+    photosDiv.appendChild(img);
+}
+
+function createPhotoStrip() {
+
+    const stripCanvas = document.createElement('canvas');
+    const ctx = stripCanvas.getContext('2d');
+
+    stripCanvas.width = 400;
+    stripCanvas.height = 1200;
+
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0,400,1200);
+
+    let loaded = 0;
+
+    photos.forEach((src,index) => {
+
+        const img = new Image();
+
+        img.onload = () => {
+
+            ctx.drawImage(
+                img,
+                25,
+                index * 290 + 20,
+                350,
+                250
+            );
+
+            loaded++;
+
+            if(loaded === photos.length){
+
+                const stripURL = stripCanvas.toDataURL("image/png");
+
+                downloadBtn.style.display = "inline-block";
+
+                downloadBtn.onclick = () => {
+                    const a = document.createElement('a');
+                    a.href = stripURL;
+                    a.download = "photobooth-strip.png";
+                    a.click();
+                };
+            }
+        };
+
+        img.src = src;
+    });
+}
+</script>
+
+</body>
+</html>
