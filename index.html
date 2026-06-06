@@ -260,7 +260,86 @@ min-width:auto;
 font-size:38px;
 }
 }
-</style>
+.menu{
+display:flex;
+gap:14px;
+list-style:none;
+}
+
+.menu-item{
+position:relative;
+}
+
+.menu-item>a{
+display:block;
+padding:10px 16px;
+border-radius:30px;
+color:white !important;
+font-weight:600;
+transition:.25s;
+}
+
+.menu-item>a:hover{
+transform:translateY(-2px);
+}
+
+.trends>a{
+background:#ff5c8a;
+}
+
+.styles>a{
+background:#9b5cff;
+}
+
+.pose>a{
+background:#4f8cff;
+}
+
+.events>a{
+background:#ffb347;
+}
+
+.gallerym>a{
+background:#33c48d;
+}
+
+.dropdown{
+position:absolute;
+top:48px;
+left:0;
+min-width:240px;
+
+background:white;
+
+border-radius:15px;
+
+list-style:none;
+
+padding:8px 0;
+
+box-shadow:0 10px 25px rgba(0,0,0,.15);
+
+opacity:0;
+visibility:hidden;
+
+transition:.25s;
+}
+
+.menu-item:hover .dropdown{
+opacity:1;
+visibility:visible;
+}
+
+.dropdown a{
+display:block;
+padding:10px 15px;
+color:#333 !important;
+text-decoration:none;
+}
+
+.dropdown a:hover{
+background:#f4f4f4;
+}
 </head>
 
 <body>
@@ -276,7 +355,63 @@ font-size:38px;
 <li><a href="#about">About</a></li>
 </ul>
 </nav>
+<nav>
+<div class="logo">📸 Photobooth With Me</div>
 
+<ul class="menu">
+
+<li class="menu-item trends">
+<a href="#">📸 Trends</a>
+<ul class="dropdown">
+<li><a href="#">2026 Photobooth Trends</a></li>
+<li><a href="#">Popular Frames</a></li>
+<li><a href="#">Viral Photo Styles</a></li>
+<li><a href="#">Top User Picks</a></li>
+</ul>
+</li>
+
+<li class="menu-item styles">
+<a href="#">🌸 Styles</a>
+<ul class="dropdown">
+<li><a href="#">Korean Strip</a></li>
+<li><a href="#">Passport Style</a></li>
+<li><a href="#">Couple Photos</a></li>
+<li><a href="#">Best Friend Photos</a></li>
+</ul>
+</li>
+
+<li class="menu-item pose">
+<a href="#">✨ Pose Ideas</a>
+<ul class="dropdown">
+<li><a href="#">Cute Pose</a></li>
+<li><a href="#">Couple Pose</a></li>
+<li><a href="#">Family Pose</a></li>
+<li><a href="#">Graduation Pose</a></li>
+</ul>
+</li>
+
+<li class="menu-item events">
+<a href="#">🎂 Events</a>
+<ul class="dropdown">
+<li><a href="#">Birthday Booth</a></li>
+<li><a href="#">Wedding Booth</a></li>
+<li><a href="#">Christmas Booth</a></li>
+<li><a href="#">Valentine Booth</a></li>
+</ul>
+</li>
+
+<li class="menu-item gallerym">
+<a href="#">💖 Gallery</a>
+<ul class="dropdown">
+<li><a href="#">Featured Photos</a></li>
+<li><a href="#">Latest Uploads</a></li>
+<li><a href="#">Community Picks</a></li>
+<li><a href="#">Inspiration Board</a></li>
+</ul>
+</li>
+
+</ul>
+</nav>
 <section id="home" class="hero">
 <h1>Photobooth With Me</h1>
 <p>Create Korean-style photo strips right from your browser</p>
