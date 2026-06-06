@@ -117,7 +117,46 @@ border-radius:25px;
 box-shadow:0 10px 30px rgba(0,0,0,.08);
 position:relative;
 }
+.photobooth-bg{
+position:absolute;
+inset:0;
+overflow:hidden;
+z-index:0;
+background:linear-gradient(
+135deg,
+#ffe4ec,
+#f8dfff,
+#dff7ff
+);
+}
 
+.photobooth-bg span{
+position:absolute;
+font-size:40px;
+opacity:.25;
+animation:float 10s linear infinite;
+}
+
+.photobooth-bg span:nth-child(1){left:10%;top:100%;animation-delay:0s;}
+.photobooth-bg span:nth-child(2){left:25%;top:100%;animation-delay:2s;}
+.photobooth-bg span:nth-child(3){left:45%;top:100%;animation-delay:4s;}
+.photobooth-bg span:nth-child(4){left:65%;top:100%;animation-delay:1s;}
+.photobooth-bg span:nth-child(5){left:80%;top:100%;animation-delay:5s;}
+.photobooth-bg span:nth-child(6){left:90%;top:100%;animation-delay:3s;}
+
+@keyframes float{
+0%{
+transform:translateY(0) rotate(0deg);
+opacity:0;
+}
+15%{
+opacity:.25;
+}
+100%{
+transform:translateY(-800px) rotate(360deg);
+opacity:0;
+}
+}
 .live-badge{
 position:absolute;
 top:15px;
@@ -452,6 +491,14 @@ background:#f4f4f4;
 
 <div class="camera-card">
 <div class="live-badge">🔴 LIVE</div>
+<div class="photobooth-bg">
+  <span>📸</span>
+  <span>✨</span>
+  <span>💖</span>
+  <span>🌸</span>
+  <span>📷</span>
+  <span>🎞️</span>
+</div>  
 <video id="video" autoplay playsinline></video>
 </div>
 
