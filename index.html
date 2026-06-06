@@ -22,6 +22,7 @@
         max-width: 100%;
         border: 5px solid #333;
         border-radius: 10px;
+        background: #ddd;
     }
 
     button {
@@ -66,8 +67,6 @@
 
 <div id="countdown"></div>
 
-<br>
-
 <button id="startBtn">Start Photobooth</button>
 <button id="downloadBtn">Download Strip</button>
 
@@ -83,55 +82,99 @@ const photosDiv = document.getElementById('photos');
 const downloadBtn = document.getElementById('downloadBtn');
 
 let photos = [];
+let cameraStarted = false;
 
-// Open webcam
-navigator.mediaDevices.getUserMedia({ video: true })
-.then(stream => {
-    video.srcObject = stream;
-})
-.catch(err => {
-    alert("Cannot access camera: " + err);
-});
+/*
+    Camera chỉ được yêu cầu khi user bấm Start
+*/
+async function startCamera() {
+
+    if (cameraStarted) {
+        return true;
+    }
+
+    try {
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: true
+        });
+
+        video.srcObject = stream;
+        cameraStarted = true;
+
+        await new Promise(resolve => {
+            video.onloadedmetadata = () => resolve();
+        });
+
+        return true;
+
+    } catch (error) {
+
+        alert(
+            "Camera access is required to use Photobooth."
+        );
+
+        return false;
+    }
+}
 
 document.getElementById('startBtn').addEventListener('click', async () => {
+
+    const cameraReady = await startCamera();
+
+    if (!cameraReady) {
+        return;
+    }
+
     photos = [];
     photosDiv.innerHTML = '';
     downloadBtn.style.display = 'none';
 
-    for(let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 4; i++) {
 
-        for(let c = 3; c > 0; c--) {
+        for (let c = 3; c > 0; c--) {
             countdown.textContent = c;
             await sleep(1000);
         }
 
-        countdown.textContent = "📸";
+        countdown.textContent = '📸';
 
         capturePhoto();
 
-        await sleep(500);
+        await sleep(800);
     }
 
-    countdown.textContent = "";
+    countdown.textContent = '';
+
     createPhotoStrip();
 });
 
-function sleep(ms){
+function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function capturePhoto() {
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
 
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0);
+
+    ctx.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
 
     const imageData = canvas.toDataURL('image/png');
+
     photos.push(imageData);
 
     const img = document.createElement('img');
     img.src = imageData;
+
     photosDiv.appendChild(img);
 }
 
@@ -143,12 +186,17 @@ function createPhotoStrip() {
     stripCanvas.width = 400;
     stripCanvas.height = 1200;
 
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0,400,1200);
+    ctx.fillStyle = 'white';
+    ctx.fillRect(
+        0,
+        0,
+        stripCanvas.width,
+        stripCanvas.height
+    );
 
     let loaded = 0;
 
-    photos.forEach((src,index) => {
+    photos.forEach((src, index) => {
 
         const img = new Image();
 
@@ -164,16 +212,23 @@ function createPhotoStrip() {
 
             loaded++;
 
-            if(loaded === photos.length){
+            if (loaded === photos.length) {
 
-                const stripURL = stripCanvas.toDataURL("image/png");
+                const stripURL =
+                    stripCanvas.toDataURL('image/png');
 
-                downloadBtn.style.display = "inline-block";
+                downloadBtn.style.display =
+                    'inline-block';
 
                 downloadBtn.onclick = () => {
-                    const a = document.createElement('a');
+
+                    const a =
+                        document.createElement('a');
+
                     a.href = stripURL;
-                    a.download = "photobooth-strip.png";
+                    a.download =
+                        'photobooth-strip.png';
+
                     a.click();
                 };
             }
