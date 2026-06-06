@@ -240,7 +240,17 @@ color:white;
 background:#222;
 color:white;
 }
+.dark .dropdown{
+background:#333;
+}
 
+.dark .dropdown a{
+color:white !important;
+}
+
+.dark .dropdown a:hover{
+background:#444;
+}
 .dark nav a{
 color:white;
 }
@@ -340,6 +350,7 @@ text-decoration:none;
 .dropdown a:hover{
 background:#f4f4f4;
 }
+</style>
 </head>
 
 <body>
@@ -511,8 +522,16 @@ async function startCamera(){
 if(cameraStarted)return true;
 
 try{
-const stream=await navigator.mediaDevices.getUserMedia({video:true});
+const stream=await navigator.mediaDevices.getUserMedia({
+video:true
+});
+
 video.srcObject=stream;
+
+await new Promise(resolve=>{
+video.onloadedmetadata=resolve;
+});
+
 cameraStarted=true;
 return true;
 }catch(e){
@@ -580,6 +599,8 @@ createStrip();
 document.getElementById('retakeBtn').onclick=()=>{
 photos=[];
 photosDiv.innerHTML='';
+countdown.textContent='';
+downloadBtn.style.display='none';
 };
 
 function createStrip(){
@@ -627,17 +648,20 @@ const url=strip.toDataURL();
 
 downloadBtn.style.display='inline-block';
 
-downloadBtn.onclick=()=>{
+const url=strip.toDataURL();
 
+const g=document.createElement('img');
+g.src=url;
+gallery.appendChild(g);
+
+downloadBtn.style.display='inline-block';
+
+downloadBtn.onclick=()=>{
 const a=document.createElement('a');
 a.href=url;
 a.download='photobooth-strip.png';
 a.click();
-
-const g=document.createElement('img');
-g.src=url;
-
-gallery.appendChild(g);
+};
 };
 }
 };
