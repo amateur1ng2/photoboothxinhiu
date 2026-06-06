@@ -3,239 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simple Photobooth</title>
-    
+<title>Photobooth With Me</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: #f5f5f5;
-        padding: 20px;
-    }
-
-    h1 {
-        margin-bottom: 20px;
-    }
-
-    video {
-        width: 500px;
-        max-width: 100%;
-        border: 5px solid #333;
-        border-radius: 10px;
-        background: #ddd;
-    }
-
-    button {
-        margin: 10px;
-        padding: 12px 24px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    #countdown {
-        font-size: 48px;
-        font-weight: bold;
-        color: red;
-        margin: 20px;
-        height: 60px;
-    }
-
-    #photos {
-        display: grid;
-        grid-template-columns: repeat(2, 200px);
-        gap: 10px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    #photos img {
-        width: 200px;
-        border: 3px solid #444;
-        border-radius: 8px;
-    }
-
-    #downloadBtn {
-        display: none;
-    }
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Segoe UI',sans-serif;
+text-align:center;
+min-height:100vh;
+background:linear-gradient(135deg,#ffe4ec,#f5e8ff,#e6f7ff);
+padding:30px;
+}
+.header{margin-bottom:25px}
+.header h1{font-size:48px;color:#333;margin-bottom:10px}
+.header p{color:#666;font-size:18px}
+.camera-card{
+width:fit-content;
+margin:0 auto;
+background:#fff;
+padding:20px;
+border-radius:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+}
+video{
+width:500px;
+max-width:100%;
+border-radius:20px;
+background:#ddd;
+}
+#countdown{
+font-size:60px;
+font-weight:bold;
+color:#ff4d6d;
+height:80px;
+margin:20px 0;
+}
+.actions{margin:20px 0}
+button{
+border:none;
+padding:15px 30px;
+border-radius:50px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+button:hover{transform:translateY(-2px)}
+#startBtn{background:#ff5c8a;color:#fff}
+#downloadBtn{background:#7b61ff;color:#fff;display:none}
+#photos{
+margin-top:30px;
+display:grid;
+grid-template-columns:repeat(2,200px);
+gap:15px;
+justify-content:center;
+}
+#photos img{
+width:200px;
+border-radius:15px;
+border:5px solid #fff;
+box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+@media(max-width:600px){
+.header h1{font-size:32px}
+#photos{grid-template-columns:1fr}
+#photos img{width:100%}
+}
 </style>
 </head>
 <body>
 
-<h1>📸 Simple Photobooth</h1>
+<div class="header">
+<h1>📸 Photobooth With Me</h1>
+<p>Capture Your Memories</p>
+</div>
 
+<div class="camera-card">
 <video id="video" autoplay playsinline></video>
+</div>
 
 <div id="countdown"></div>
 
+<div class="actions">
 <button id="startBtn">Start Photobooth</button>
 <button id="downloadBtn">Download Strip</button>
+</div>
 
 <div id="photos"></div>
-
-<canvas id="canvas" style="display:none;"></canvas>
+<canvas id="canvas" style="display:none"></canvas>
 
 <script>
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const countdown = document.getElementById('countdown');
-const photosDiv = document.getElementById('photos');
-const downloadBtn = document.getElementById('downloadBtn');
+const video=document.getElementById('video');
+const canvas=document.getElementById('canvas');
+const countdown=document.getElementById('countdown');
+const photosDiv=document.getElementById('photos');
+const downloadBtn=document.getElementById('downloadBtn');
 
-let photos = [];
-let cameraStarted = false;
+let photos=[];
+let cameraStarted=false;
 
-/*
-    Camera chỉ được yêu cầu khi user bấm Start
-*/
-async function startCamera() {
-
-    if (cameraStarted) {
-        return true;
-    }
-
-    try {
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: true
-        });
-
-        video.srcObject = stream;
-        cameraStarted = true;
-
-        await new Promise(resolve => {
-            video.onloadedmetadata = () => resolve();
-        });
-
-        return true;
-
-    } catch (error) {
-
-        alert(
-            "Camera access is required to use Photobooth."
-        );
-
-        return false;
-    }
+async function startCamera(){
+ if(cameraStarted) return true;
+ try{
+   const stream=await navigator.mediaDevices.getUserMedia({video:true});
+   video.srcObject=stream;
+   cameraStarted=true;
+   await new Promise(resolve=>video.onloadedmetadata=resolve);
+   return true;
+ }catch(e){
+   alert('Camera access is required to use Photobooth.');
+   return false;
+ }
 }
 
-document.getElementById('startBtn').addEventListener('click', async () => {
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-    const cameraReady = await startCamera();
+function capturePhoto(){
+ canvas.width=video.videoWidth;
+ canvas.height=video.videoHeight;
+ const ctx=canvas.getContext('2d');
+ ctx.drawImage(video,0,0,canvas.width,canvas.height);
+ const imageData=canvas.toDataURL('image/png');
+ photos.push(imageData);
 
-    if (!cameraReady) {
-        return;
-    }
+ const img=document.createElement('img');
+ img.src=imageData;
+ photosDiv.appendChild(img);
+}
 
-    photos = [];
-    photosDiv.innerHTML = '';
-    downloadBtn.style.display = 'none';
+document.getElementById('startBtn').addEventListener('click',async()=>{
+ const ready=await startCamera();
+ if(!ready) return;
 
-    for (let i = 1; i <= 4; i++) {
+ photos=[];
+ photosDiv.innerHTML='';
+ downloadBtn.style.display='none';
 
-        for (let c = 3; c > 0; c--) {
-            countdown.textContent = c;
-            await sleep(1000);
-        }
+ for(let i=0;i<4;i++){
+   for(let c=3;c>0;c--){
+     countdown.textContent=c;
+     await sleep(1000);
+   }
+   countdown.textContent='📸';
+   capturePhoto();
+   await sleep(800);
+ }
 
-        countdown.textContent = '📸';
-
-        capturePhoto();
-
-        await sleep(800);
-    }
-
-    countdown.textContent = '';
-
-    createPhotoStrip();
+ countdown.textContent='';
+ createPhotoStrip();
 });
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+function createPhotoStrip(){
+ const stripCanvas=document.createElement('canvas');
+ const ctx=stripCanvas.getContext('2d');
 
-function capturePhoto() {
+ stripCanvas.width=400;
+ stripCanvas.height=1200;
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+ ctx.fillStyle='white';
+ ctx.fillRect(0,0,400,1200);
 
-    const ctx = canvas.getContext('2d');
+ let loaded=0;
 
-    ctx.drawImage(
-        video,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
+ photos.forEach((src,index)=>{
+   const img=new Image();
+   img.onload=()=>{
+     ctx.drawImage(img,25,index*290+20,350,250);
+     loaded++;
 
-    const imageData = canvas.toDataURL('image/png');
+     if(loaded===photos.length){
+       ctx.fillStyle='#333';
+       ctx.font='20px Arial';
+       ctx.textAlign='center';
+       ctx.fillText('Photobooth With Me',200,1180);
 
-    photos.push(imageData);
+       const stripURL=stripCanvas.toDataURL('image/png');
 
-    const img = document.createElement('img');
-    img.src = imageData;
-
-    photosDiv.appendChild(img);
-}
-
-function createPhotoStrip() {
-
-    const stripCanvas = document.createElement('canvas');
-    const ctx = stripCanvas.getContext('2d');
-
-    stripCanvas.width = 400;
-    stripCanvas.height = 1200;
-
-    ctx.fillStyle = 'white';
-    ctx.fillRect(
-        0,
-        0,
-        stripCanvas.width,
-        stripCanvas.height
-    );
-
-    let loaded = 0;
-
-    photos.forEach((src, index) => {
-
-        const img = new Image();
-
-        img.onload = () => {
-
-            ctx.drawImage(
-                img,
-                25,
-                index * 290 + 20,
-                350,
-                250
-            );
-
-            loaded++;
-
-            if (loaded === photos.length) {
-
-                const stripURL =
-                    stripCanvas.toDataURL('image/png');
-
-                downloadBtn.style.display =
-                    'inline-block';
-
-                downloadBtn.onclick = () => {
-
-                    const a =
-                        document.createElement('a');
-
-                    a.href = stripURL;
-                    a.download =
-                        'photobooth-strip.png';
-
-                    a.click();
-                };
-            }
-        };
-
-        img.src = src;
-    });
+       downloadBtn.style.display='inline-block';
+       downloadBtn.onclick=()=>{
+         const a=document.createElement('a');
+         a.href=stripURL;
+         a.download='photobooth-strip.png';
+         a.click();
+       };
+     }
+   };
+   img.src=src;
+ });
 }
 </script>
 
