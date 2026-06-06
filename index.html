@@ -3,194 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Photobooth With Me</title>
+<title>Photobooth With Me v2</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-font-family:'Segoe UI',sans-serif;
-text-align:center;
-min-height:100vh;
-background:linear-gradient(135deg,#ffe4ec,#f5e8ff,#e6f7ff);
-padding:30px;
-}
-.header{margin-bottom:25px}
-.header h1{font-size:48px;color:#333;margin-bottom:10px}
-.header p{color:#666;font-size:18px}
-.camera-card{
-width:fit-content;
-margin:0 auto;
-background:#fff;
-padding:20px;
-border-radius:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-}
-video{
-width:500px;
-max-width:100%;
-border-radius:20px;
-background:#ddd;
-}
-#countdown{
-font-size:60px;
-font-weight:bold;
-color:#ff4d6d;
-height:80px;
-margin:20px 0;
-}
-.actions{margin:20px 0}
-button{
-border:none;
-padding:15px 30px;
-border-radius:50px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-}
-button:hover{transform:translateY(-2px)}
-#startBtn{background:#ff5c8a;color:#fff}
-#downloadBtn{background:#7b61ff;color:#fff;display:none}
-#photos{
-margin-top:30px;
-display:grid;
-grid-template-columns:repeat(2,200px);
-gap:15px;
-justify-content:center;
-}
-#photos img{
-width:200px;
-border-radius:15px;
-border:5px solid #fff;
-box-shadow:0 5px 15px rgba(0,0,0,.2);
-}
-@media(max-width:600px){
-.header h1{font-size:32px}
-#photos{grid-template-columns:1fr}
-#photos img{width:100%}
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Segoe UI,sans-serif;background:linear-gradient(135deg,#ffe4ec,#f5e8ff,#e6f7ff);padding:20px;text-align:center}
+nav{background:#fff;padding:15px;border-radius:20px;max-width:1000px;margin:auto;display:flex;justify-content:space-between;align-items:center;box-shadow:0 5px 20px rgba(0,0,0,.1)}
+nav ul{display:flex;gap:20px;list-style:none}
+.header{margin:25px 0}
+.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+select,button{padding:12px;border-radius:12px;border:none}
+button{background:#ff5c8a;color:white;font-weight:bold;cursor:pointer}
+.card{background:#fff;padding:20px;border-radius:25px;max-width:600px;margin:auto;box-shadow:0 5px 20px rgba(0,0,0,.1)}
+video{width:100%;border-radius:15px}
+#countdown{font-size:60px;color:#ff4d6d;height:70px;margin:15px}
+#photos{display:grid;grid-template-columns:repeat(2,180px);gap:10px;justify-content:center;margin-top:20px}
+#photos img{width:180px;border-radius:15px;border:4px solid white}
+#gallery{margin-top:30px}
+.gallery-item{width:150px;margin:10px;border-radius:10px}
 </style>
 </head>
 <body>
 
+<nav>
+<div><b>📸 Photobooth With Me</b></div>
+<ul>
+<li>Home</li>
+<li>Frames</li>
+<li>Filters</li>
+<li>Gallery</li>
+<li>About</li>
+</ul>
+</nav>
+
 <div class="header">
-<h1>📸 Photobooth With Me</h1>
+<h1>Photobooth With Me</h1>
 <p>Capture Your Memories</p>
 </div>
 
-<div class="camera-card">
+<div class="controls">
+<select id="photoCount">
+<option value="2">2 Photos</option>
+<option value="4" selected>4 Photos</option>
+<option value="6">6 Photos</option>
+</select>
+
+<select id="filter">
+<option value="none">Normal</option>
+<option value="grayscale(100%)">Black & White</option>
+<option value="sepia(100%)">Vintage</option>
+<option value="contrast(120%) saturate(120%)">Warm</option>
+</select>
+
+<button id="startBtn">Start</button>
+<button id="retakeBtn">Retake</button>
+<button id="downloadBtn" style="display:none">Download</button>
+</div>
+
+<div class="card">
 <video id="video" autoplay playsinline></video>
 </div>
 
 <div id="countdown"></div>
-
-<div class="actions">
-<button id="startBtn">Start Photobooth</button>
-<button id="downloadBtn">Download Strip</button>
-</div>
-
 <div id="photos"></div>
+
+<h2 id="gallery">Gallery</h2>
+<div id="savedGallery"></div>
+
 <canvas id="canvas" style="display:none"></canvas>
 
 <script>
 const video=document.getElementById('video');
 const canvas=document.getElementById('canvas');
-const countdown=document.getElementById('countdown');
 const photosDiv=document.getElementById('photos');
+const countdown=document.getElementById('countdown');
 const downloadBtn=document.getElementById('downloadBtn');
+const gallery=document.getElementById('savedGallery');
 
 let photos=[];
 let cameraStarted=false;
 
+document.getElementById('filter').addEventListener('change',e=>{
+ video.style.filter=e.target.value;
+});
+
 async function startCamera(){
  if(cameraStarted) return true;
  try{
-   const stream=await navigator.mediaDevices.getUserMedia({video:true});
-   video.srcObject=stream;
-   cameraStarted=true;
-   await new Promise(resolve=>video.onloadedmetadata=resolve);
-   return true;
- }catch(e){
-   alert('Camera access is required to use Photobooth.');
-   return false;
+  const stream=await navigator.mediaDevices.getUserMedia({video:true});
+  video.srcObject=stream;
+  cameraStarted=true;
+  return true;
+ }catch{
+  alert('Camera permission required');
+  return false;
  }
 }
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-function capturePhoto(){
+function capture(){
  canvas.width=video.videoWidth;
  canvas.height=video.videoHeight;
  const ctx=canvas.getContext('2d');
- ctx.drawImage(video,0,0,canvas.width,canvas.height);
- const imageData=canvas.toDataURL('image/png');
- photos.push(imageData);
+ ctx.filter=getComputedStyle(video).filter;
+ ctx.drawImage(video,0,0);
+ const img=canvas.toDataURL('image/png');
+ photos.push(img);
 
- const img=document.createElement('img');
- img.src=imageData;
- photosDiv.appendChild(img);
+ const preview=document.createElement('img');
+ preview.src=img;
+ photosDiv.appendChild(preview);
 }
 
-document.getElementById('startBtn').addEventListener('click',async()=>{
- const ready=await startCamera();
- if(!ready) return;
+document.getElementById('startBtn').onclick=async()=>{
+ const ok=await startCamera();
+ if(!ok) return;
 
  photos=[];
  photosDiv.innerHTML='';
  downloadBtn.style.display='none';
 
- for(let i=0;i<4;i++){
-   for(let c=3;c>0;c--){
-     countdown.textContent=c;
-     await sleep(1000);
-   }
-   countdown.textContent='📸';
-   capturePhoto();
-   await sleep(800);
+ let count=parseInt(document.getElementById('photoCount').value);
+
+ for(let i=0;i<count;i++){
+  for(let c=3;c>0;c--){
+   countdown.textContent=c;
+   await sleep(1000);
+  }
+  countdown.textContent='📸';
+  capture();
+  await sleep(600);
  }
 
  countdown.textContent='';
- createPhotoStrip();
-});
+ createStrip();
+};
 
-function createPhotoStrip(){
- const stripCanvas=document.createElement('canvas');
- const ctx=stripCanvas.getContext('2d');
+document.getElementById('retakeBtn').onclick=()=>{
+ photos=[];
+ photosDiv.innerHTML='';
+ downloadBtn.style.display='none';
+};
 
- stripCanvas.width=400;
- stripCanvas.height=1200;
+function createStrip(){
+ const strip=document.createElement('canvas');
+ strip.width=400;
+ strip.height=(photos.length*260)+120;
+ const ctx=strip.getContext('2d');
 
  ctx.fillStyle='white';
- ctx.fillRect(0,0,400,1200);
+ ctx.fillRect(0,0,strip.width,strip.height);
 
  let loaded=0;
 
- photos.forEach((src,index)=>{
-   const img=new Image();
-   img.onload=()=>{
-     ctx.drawImage(img,25,index*290+20,350,250);
-     loaded++;
+ photos.forEach((src,i)=>{
+  const img=new Image();
+  img.onload=()=>{
+   ctx.drawImage(img,25,i*260+20,350,230);
+   loaded++;
 
-     if(loaded===photos.length){
-       ctx.fillStyle='#333';
-       ctx.font='20px Arial';
-       ctx.textAlign='center';
-       ctx.fillText('Photobooth With Me',200,1180);
+   if(loaded===photos.length){
+    ctx.fillStyle='#333';
+    ctx.font='18px Arial';
+    ctx.textAlign='center';
+    ctx.fillText('Photobooth With Me',200,strip.height-40);
+    ctx.fillText(new Date().toLocaleString(),200,strip.height-15);
 
-       const stripURL=stripCanvas.toDataURL('image/png');
+    const url=strip.toDataURL();
 
-       downloadBtn.style.display='inline-block';
-       downloadBtn.onclick=()=>{
-         const a=document.createElement('a');
-         a.href=stripURL;
-         a.download='photobooth-strip.png';
-         a.click();
-       };
-     }
-   };
-   img.src=src;
+    downloadBtn.style.display='inline-block';
+
+    downloadBtn.onclick=()=>{
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='photobooth-strip.png';
+      a.click();
+
+      const g=document.createElement('img');
+      g.src=url;
+      g.className='gallery-item';
+      gallery.appendChild(g);
+    };
+   }
+  };
+  img.src=src;
  });
 }
 </script>
-
 </body>
 </html>
