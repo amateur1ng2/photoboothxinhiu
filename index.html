@@ -3,163 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Photobooth With Me v4</title>
+<title>Photobooth With Me v5.1</title>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
 body{
 font-family:'Segoe UI',sans-serif;
-background:linear-gradient(135deg,#ffe4ec,#f5e8ff,#e6f7ff);
+background:linear-gradient(135deg,#ffe4ec,#f3e8ff,#e6f7ff);
 min-height:100vh;
-color:#333;
 }
 
-/* NAV */
+/* NAV (keep simple) */
 nav{
-position:sticky;
-top:0;
-z-index:999;
 display:flex;
 justify-content:space-between;
-align-items:center;
-padding:18px 40px;
-background:rgba(255,255,255,.9);
+padding:15px 30px;
+background:rgba(255,255,255,.8);
 backdrop-filter:blur(10px);
-box-shadow:0 2px 20px rgba(0,0,0,.08);
+position:sticky;
+top:0;
+z-index:10;
 }
 
-.logo{font-size:22px;font-weight:bold}
-
-nav ul{
-display:flex;
-gap:20px;
-list-style:none;
-}
-
-nav li{
-position:relative;
-}
-
-nav a{
-text-decoration:none;
-color:#333;
-font-weight:600;
-padding:8px 12px;
-border-radius:10px;
-transition:.2s;
-}
-
-nav a:hover{
-background:#ff5c8a;
-color:white;
-}
-
-/* DROPDOWN */
-.dropdown{
-position:absolute;
-top:40px;
-left:0;
-background:white;
-min-width:200px;
-border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-opacity:0;
-visibility:hidden;
-transform:translateY(10px);
-transition:.2s;
-overflow:hidden;
-}
-
-nav li:hover .dropdown{
-opacity:1;
-visibility:visible;
-transform:translateY(0);
-}
-
-.dropdown a{
-display:block;
-padding:12px 15px;
-color:#333;
-}
-
-.dropdown a:hover{
-background:linear-gradient(90deg,#ff5c8a,#7b61ff);
-color:white;
-}
-
-/* HERO */
-.hero{
-text-align:center;
-padding:50px 20px;
-}
-
-.hero h1{font-size:48px}
-.hero p{color:#666;margin-top:10px}
+.logo{font-weight:bold}
 
 /* MAIN */
 .main{
 display:flex;
-gap:25px;
+gap:20px;
 max-width:1200px;
 margin:auto;
 padding:20px;
 flex-wrap:wrap;
 }
 
-/* SETTINGS REDESIGN */
+/* SIDEBAR */
 .sidebar{
 flex:1;
 min-width:260px;
-background:linear-gradient(135deg,#ffffff,#f7f7ff);
-padding:25px;
-border-radius:25px;
+background:rgba(255,255,255,.6);
+backdrop-filter:blur(12px);
+border-radius:20px;
+padding:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
-.sidebar h3{
+/* CUSTOM DROPDOWN */
+.dd{
 margin-bottom:15px;
+position:relative;
 }
 
-.setting-box{
-margin-bottom:18px;
+.dd-btn{
 padding:12px;
-border-radius:15px;
 background:white;
+border-radius:14px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+align-items:center;
 box-shadow:0 5px 15px rgba(0,0,0,.05);
+font-weight:500;
 }
 
-select{
-width:100%;
-padding:10px;
-border-radius:10px;
-border:1px solid #ddd;
-outline:none;
+.dd-panel{
+position:absolute;
+top:55px;
+left:0;
+right:0;
+background:white;
+border-radius:14px;
+overflow:hidden;
+max-height:0;
+opacity:0;
+transition:.3s ease;
+box-shadow:0 10px 25px rgba(0,0,0,.12);
+z-index:5;
+}
+
+.dd.open .dd-panel{
+max-height:220px;
+opacity:1;
+}
+
+.dd-item{
+padding:12px;
+cursor:pointer;
+transition:.2s;
+}
+
+.dd-item:hover{
+background:linear-gradient(90deg,#ff5c8a,#7b61ff);
+color:white;
 }
 
 /* CAMERA */
-.camera-section{flex:2;min-width:500px}
-
-.camera-card{
-background:white;
-padding:20px;
-border-radius:25px;
-box-shadow:0 10px 30px rgba(0,0,0,.08);
-position:relative;
-overflow:hidden;
+.camera{
+flex:2;
+min-width:500px;
 }
 
-/* LIVE ANIMATION */
-.live-area{
+.camera-box{
+position:relative;
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+video{
+width:100%;
+display:block;
+}
+
+/* LIVE */
+.live{
 position:absolute;
 top:10px;
 left:10px;
 display:flex;
+gap:6px;
 align-items:center;
-gap:8px;
 }
 
-.live-dot{
+.dot{
 width:10px;
 height:10px;
 background:red;
@@ -168,299 +136,252 @@ animation:pulse 1s infinite;
 }
 
 @keyframes pulse{
-0%{transform:scale(1);opacity:1}
+0%{transform:scale(1)}
 50%{transform:scale(1.6);opacity:.4}
-100%{transform:scale(1);opacity:1}
 }
 
-.camera-animation{
+/* STICKER PREVIEW */
+.sticker{
 position:absolute;
-right:10px;
-top:10px;
-width:90px;
-height:90px;
-opacity:.7;
-animation:float 2s infinite ease-in-out;
+font-size:30px;
+cursor:grab;
+user-select:none;
 }
 
-@keyframes float{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(-8px)}
-}
-
-video{
-width:100%;
-border-radius:20px;
-}
-
-/* BUTTONS */
-.buttons{
-margin-top:15px;
+/* CONTROLS */
+.controls{
 display:flex;
-justify-content:center;
 gap:10px;
-flex-wrap:wrap;
+justify-content:center;
+margin-top:12px;
 }
 
 button{
+padding:10px 16px;
 border:none;
-padding:12px 20px;
-border-radius:30px;
+border-radius:20px;
 cursor:pointer;
 font-weight:bold;
 }
 
-.primary{background:#ff5c8a;color:white}
-.secondary{background:#7b61ff;color:white}
+.start{background:#ff5c8a;color:white}
 .stop{background:#ff3b3b;color:white}
+.reset{background:#7b61ff;color:white}
 
 /* COUNTDOWN */
 #countdown{
-font-size:60px;
 text-align:center;
-height:70px;
+font-size:50px;
+height:60px;
 color:#ff4d6d;
-margin-top:10px;
 }
 
-/* FLASH */
-.flash{animation:flash .2s}
-@keyframes flash{
-0%{opacity:1}
-50%{opacity:.2}
-100%{opacity:1}
-}
-
-/* DARK */
-.dark{background:#111;color:white}
-.dark nav,.dark .sidebar,.dark .camera-card{background:#222;color:white}
-.dark nav a{color:white}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-.main{flex-direction:column}
-.hero h1{font-size:34px}
-}
 </style>
 </head>
 
 <body>
 
 <nav>
-<div class="logo">📸 Photobooth Trend</div>
-
-<ul>
-
-<li>
-<a href="#">Trend ✨</a>
-<div class="dropdown">
-<a>Neon Glow Strip</a>
-<a>Pink K-Style Booth</a>
-<a>Retro Film Look</a>
-<a>Polaroid Aesthetic</a>
-</div>
-</li>
-
-<li>
-<a href="#">Filters 🎨</a>
-<div class="dropdown">
-<a>Soft Pink</a>
-<a>Vintage Film</a>
-<a>Black & White</a>
-<a>Warm Sunset</a>
-</div>
-</li>
-
-<li>
-<a href="#">Frames 🖼</a>
-<div class="dropdown">
-<a>Korean Cute Frame</a>
-<a>Birthday Party</a>
-<a>Minimal White</a>
-<a>Glow Border</a>
-</div>
-</li>
-
-<li>
-<a href="#">Gallery 📷</a>
-<div class="dropdown">
-<a>My Strips</a>
-<a>Saved Moments</a>
-<a>Trending Shots</a>
-</div>
-</li>
-
-</ul>
+<div class="logo">📸 Korean Photobooth</div>
 </nav>
-
-<section class="hero">
-<h1>Photobooth Trend Studio</h1>
-<p>Create aesthetic photobooth strips in your browser</p>
-</section>
 
 <div class="main">
 
+<!-- SETTINGS -->
 <div class="sidebar">
 
-<h3>⚙ Settings</h3>
-
-<div class="setting-box">
-<label>Photos</label>
-<select id="photoCount">
-<option value="2">2 Photos</option>
-<option value="4" selected>4 Photos</option>
-<option value="6">6 Photos</option>
-</select>
+<!-- PHOTOS -->
+<div class="dd" id="dd-photo">
+<div class="dd-btn" onclick="toggle('dd-photo')">
+Photos <span>▾</span>
+</div>
+<div class="dd-panel">
+<div class="dd-item" onclick="setValue('photo',2)">2 Photos</div>
+<div class="dd-item" onclick="setValue('photo',4)">4 Photos</div>
+<div class="dd-item" onclick="setValue('photo',6)">6 Photos</div>
+</div>
 </div>
 
-<div class="setting-box">
-<label>Frame Style</label>
-<select>
-<option>Korean Cute</option>
-<option>Neon Glow</option>
-<option>Vintage Film</option>
-</select>
+<!-- FRAME -->
+<div class="dd" id="dd-frame">
+<div class="dd-btn" onclick="toggle('dd-frame')">
+Frame Style <span>▾</span>
+</div>
+<div class="dd-panel">
+<div class="dd-item">Korean Pink</div>
+<div class="dd-item">Soft White</div>
+<div class="dd-item">Neon Glow</div>
+</div>
 </div>
 
-<div class="setting-box">
-<label>Filter</label>
-<select id="filter">
-<option value="none">Normal</option>
-<option value="grayscale(100%)">B&W</option>
-<option value="sepia(100%)">Vintage</option>
-<option value="contrast(120%)">Warm</option>
-</select>
+<!-- FILTER -->
+<div class="dd" id="dd-filter">
+<div class="dd-btn" onclick="toggle('dd-filter')">
+Filter <span>▾</span>
+</div>
+<div class="dd-panel">
+<div class="dd-item" onclick="setFilter('none')">Normal</div>
+<div class="dd-item" onclick="setFilter('grayscale(1)')">B&W</div>
+<div class="dd-item" onclick="setFilter('sepia(1)')">Vintage</div>
+</div>
+</div>
+
+<!-- STICKER -->
+<div class="dd" id="dd-sticker">
+<div class="dd-btn" onclick="toggle('dd-sticker')">
+Sticker 🎀 <span>▾</span>
+</div>
+<div class="dd-panel">
+<div class="dd-item" onclick="setSticker('💖')">💖 Heart</div>
+<div class="dd-item" onclick="setSticker('✨')">✨ Sparkle</div>
+<div class="dd-item" onclick="setSticker('🎀')">🎀 Ribbon</div>
+<div class="dd-item" onclick="setSticker('🐻')">🐻 Bear</div>
+</div>
 </div>
 
 </div>
 
-<div class="camera-section">
+<!-- CAMERA -->
+<div class="camera">
 
-<div class="camera-card">
-
-<div class="live-area">
-<div class="live-dot"></div>
-<strong>LIVE</strong>
-</div>
-
-<!-- “AI-like animated camera” (SVG animation) -->
-<svg class="camera-animation" viewBox="0 0 100 100">
-<circle cx="50" cy="50" r="20" fill="#ff5c8a">
-<animate attributeName="r" values="18;24;18" dur="1.5s" repeatCount="indefinite"/>
-</circle>
-</svg>
+<div class="camera-box">
+<div class="live"><div class="dot"></div> LIVE</div>
 
 <video id="video" autoplay playsinline></video>
+
+<div id="stickerLayer"></div>
+
 </div>
 
 <div id="countdown"></div>
 
-<div class="buttons">
-<button class="primary" id="startBtn">Start</button>
+<div class="controls">
+<button class="start" id="startBtn">Start</button>
 <button class="stop" id="stopBtn">Stop</button>
-<button class="secondary" id="retakeBtn">Retake</button>
-<button class="dark" id="darkModeBtn">🌙</button>
+<button class="reset" id="resetBtn">Reset</button>
 </div>
 
-<div id="photos"></div>
-
 </div>
+
 </div>
 
 <script>
 
 const video=document.getElementById('video');
-const canvas=document.createElement('canvas');
-const photosDiv=document.getElementById('photos');
-const countdown=document.getElementById('countdown');
+const layer=document.getElementById('stickerLayer');
 
+let running=false;
 let photos=[];
-let cameraStarted=false;
-let isCapturing=false;
+let selectedSticker=null;
+let stickers=[];
 
-document.getElementById('darkModeBtn').onclick=()=>{
-document.body.classList.toggle('dark');
+/* CAMERA */
+navigator.mediaDevices.getUserMedia({video:true})
+.then(s=>video.srcObject=s);
+
+/* dropdown */
+function toggle(id){
+document.getElementById(id).classList.toggle('open');
+}
+
+/* settings */
+function setValue(type,val){
+if(type==='photo') window.photoCount=val;
+}
+
+function setFilter(f){
+video.style.filter=f;
+}
+
+function setSticker(s){
+selectedSticker=s;
+createStickerPreview(s);
+}
+
+/* sticker preview (before capture) */
+function createStickerPreview(s){
+const el=document.createElement('div');
+el.innerText=s;
+el.className='sticker';
+el.style.left="120px";
+el.style.top="120px";
+
+makeDraggable(el);
+layer.appendChild(el);
+stickers.push(el);
+}
+
+/* drag */
+function makeDraggable(el){
+let drag=false;
+
+el.onmousedown=()=>drag=true;
+document.onmouseup=()=>drag=false;
+
+document.onmousemove=(e)=>{
+if(drag){
+el.style.left=e.pageX+'px';
+el.style.top=e.pageY+'px';
+}
 };
-
-document.getElementById('filter').onchange=(e)=>{
-video.style.filter=e.target.value;
-};
-
-async function startCamera(){
-if(cameraStarted) return true;
-try{
-const stream=await navigator.mediaDevices.getUserMedia({video:true});
-video.srcObject=stream;
-cameraStarted=true;
-return true;
-}catch(e){
-alert('Camera permission required');
-return false;
-}
 }
 
-function sleep(ms){
-return new Promise(r=>setTimeout(r,ms));
-}
-
+/* capture */
 function capture(){
+const canvas=document.createElement('canvas');
 canvas.width=video.videoWidth;
 canvas.height=video.videoHeight;
+
 const ctx=canvas.getContext('2d');
-ctx.filter=getComputedStyle(video).filter;
 ctx.drawImage(video,0,0);
+
+// draw stickers
+stickers.forEach(st=>{
+ctx.font="40px Arial";
+ctx.fillText(st.innerText,parseInt(st.style.left),parseInt(st.style.top));
+});
+
 photos.push(canvas.toDataURL());
-
-const img=document.createElement('img');
-img.src=canvas.toDataURL();
-photosDiv.appendChild(img);
-
-document.body.classList.add('flash');
-setTimeout(()=>document.body.classList.remove('flash'),200);
 }
 
-/* START */
+/* start */
 document.getElementById('startBtn').onclick=async()=>{
-const ok=await startCamera();
-if(!ok) return;
-
+running=true;
 photos=[];
-photosDiv.innerHTML='';
-isCapturing=true;
+layer.innerHTML='';
+stickers=[];
 
-let count=parseInt(document.getElementById('photoCount').value);
+let count=window.photoCount||4;
 
 for(let i=0;i<count;i++){
-if(!isCapturing) break;
+if(!running) break;
 
 for(let c=3;c>0;c--){
-if(!isCapturing) break;
-countdown.textContent=c;
-await sleep(1000);
+document.getElementById('countdown').innerText=c;
+await new Promise(r=>setTimeout(r,1000));
 }
 
-if(!isCapturing) break;
-
-countdown.textContent='📸';
+document.getElementById('countdown').innerText="📸";
 capture();
-await sleep(500);
+await new Promise(r=>setTimeout(r,500));
 }
 
-countdown.textContent='';
-isCapturing=false;
+document.getElementById('countdown').innerText="";
 };
 
-/* STOP */
+/* stop */
 document.getElementById('stopBtn').onclick=()=>{
-isCapturing=false;
-countdown.textContent='';
+running=false;
+document.getElementById('countdown').innerText="";
 };
 
-/* RETAKE */
-document.getElementById('retakeBtn').onclick=()=>{
+/* reset */
+document.getElementById('resetBtn').onclick=()=>{
+running=false;
 photos=[];
-photosDiv.innerHTML='';
-isCapturing=false;
+layer.innerHTML='';
+stickers=[];
+document.getElementById('countdown').innerText="";
 };
 
 </script>
