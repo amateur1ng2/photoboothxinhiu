@@ -16,7 +16,7 @@ overflow-x:hidden;
 color:#333;
 }
 
-/* ===== TOP BAR ===== */
+/* ===== NAV ===== */
 nav{
 position:sticky;
 top:0;
@@ -42,37 +42,39 @@ color:#333;
 font-weight:600;
 }
 
-/* ===== PAGE TITLE ===== */
+/* ===== HERO ===== */
 .hero{
 text-align:center;
 padding:28px 12px;
 }
 
-/* ===== MAIN GRID (CLEAN REDESIGN) ===== */
+/* ===== CLEAN 3 COLUMN LAYOUT FIX ===== */
 .main{
 max-width:1200px;
-margin:auto;
+margin:20px auto;
+padding:0 16px;
+
 display:grid;
-grid-template-columns:280px 1fr 300px;
-gap:18px;
-padding:10px 14px;
-align-items:start;
+grid-template-columns:1fr 1.8fr 1fr;
+gap:20px;
+
+align-items:stretch;
 }
 
-/* ===== CARD BASE STYLE ===== */
+/* ===== CARD BASE ===== */
 .card{
-background:rgba(255,255,255,.75);
+background:rgba(255,255,255,.78);
 backdrop-filter:blur(14px);
 border-radius:18px;
 box-shadow:0 8px 24px rgba(0,0,0,.06);
 padding:14px;
 }
 
-/* ===== LEFT PANEL ===== */
+/* ===== SIDEBAR ===== */
 .sidebar{
 display:flex;
 flex-direction:column;
-gap:12px;
+gap:10px;
 }
 
 .sidebar button{
@@ -83,25 +85,27 @@ cursor:pointer;
 font-weight:600;
 background:#fff;
 transition:.2s;
+width:100%;
 }
 
 .sidebar button:hover{
 transform:translateY(-1px);
 }
 
-/* ===== CENTER CAMERA ===== */
+/* ===== CAMERA CENTER ===== */
 .camera-wrap{
 display:flex;
 flex-direction:column;
-gap:10px;
+gap:12px;
 }
 
 .camera-card{
 position:relative;
-border-radius:18px;
+border-radius:22px;
 overflow:hidden;
 aspect-ratio:3/4;
 background:#000;
+box-shadow:0 12px 35px rgba(0,0,0,.10);
 }
 
 video{
@@ -110,13 +114,13 @@ height:100%;
 object-fit:cover;
 }
 
-/* LIVE BADGE */
+/* LIVE */
 .live-badge{
 position:absolute;
 top:10px;
 left:10px;
 background:red;
-color:white;
+color:#fff;
 padding:4px 10px;
 border-radius:20px;
 font-size:12px;
@@ -141,21 +145,28 @@ background:white;
 cursor:pointer;
 }
 
-/* STICKERS LAYER */
+/* STICKERS */
 #layer{
 position:absolute;
 inset:0;
 z-index:2;
 }
 
-/* ===== RIGHT PANEL ===== */
+.sticker{
+position:absolute;
+font-size:32px;
+cursor:grab;
+user-select:none;
+}
+
+/* RIGHT PANEL */
 .panel{
 display:flex;
 flex-direction:column;
 gap:12px;
 }
 
-/* ===== COUNTDOWN ===== */
+/* COUNTDOWN */
 #countdown{
 text-align:center;
 font-size:54px;
@@ -163,7 +174,7 @@ height:70px;
 color:#ff4d6d;
 }
 
-/* ===== FRAME BOX ===== */
+/* FRAME */
 #frameBox{
 display:none;
 background:#fff;
@@ -181,16 +192,14 @@ margin:6px 0;
 transition:.2s;
 }
 
-.frame-item:hover{
-background:#eee;
-}
+.frame-item:hover{background:#eee}
 
 .frame-item.active{
 background:linear-gradient(90deg,#ff5c8a,#7b61ff);
 color:white;
 }
 
-/* ===== PHOTO GRID ===== */
+/* PHOTOS */
 #photos{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
@@ -215,27 +224,30 @@ height:20px;
 border:none;
 border-radius:50%;
 background:red;
-color:white;
+color:#fff;
 cursor:pointer;
 }
 
-/* ===== STICKERS ===== */
-.sticker{
-position:absolute;
-font-size:32px;
-cursor:grab;
-user-select:none;
-}
-
 /* FLASH */
-.flash{
-animation:flash .2s;
-}
+.flash{animation:flash .2s}
 @keyframes flash{
 0%{opacity:1}
 50%{opacity:.2}
 100%{opacity:1}
 }
+
+/* BUTTONS */
+button{
+border:none;
+padding:10px 14px;
+border-radius:30px;
+cursor:pointer;
+font-weight:600;
+}
+
+.primary{background:#ff5c8a;color:#fff}
+.secondary{background:#7b61ff;color:#fff}
+.dark-btn{background:#222;color:#fff}
 
 /* RESPONSIVE */
 @media(max-width:900px){
@@ -259,7 +271,7 @@ grid-template-columns:1fr;
 
 <div class="hero">
 <h2>Photobooth Studio</h2>
-<p>Clean UI – Korean style layout</p>
+<p>Clean layout + stable engine</p>
 </div>
 
 <div class="main">
@@ -282,7 +294,10 @@ grid-template-columns:1fr;
 <button onclick="addSticker('✨')">✨</button>
 <button onclick="addSticker('🎀')">🎀</button>
 
-<button onclick="start()">Start</button>
+<hr>
+
+<button class="primary" onclick="startCamera()">Start</button>
+<button class="secondary" onclick="stopCamera()">Stop</button>
 
 </div>
 
@@ -322,20 +337,34 @@ grid-template-columns:1fr;
 
 <script>
 
-/* ===== CAMERA ===== */
 const video=document.getElementById("video");
 const layer=document.getElementById("layer");
-const photosDiv=document.getElementById("photos");
 
+let streamRef=null;
 let photos=[];
 let sessionCount=4;
 let zoomLevel=1;
 
-/* start camera */
-navigator.mediaDevices.getUserMedia({video:true})
-.then(s=>video.srcObject=s);
+/* CAMERA START */
+function startCamera(){
 
-/* ===== ZOOM ===== */
+navigator.mediaDevices.getUserMedia({video:true})
+.then(stream=>{
+video.srcObject=stream;
+streamRef=stream;
+});
+}
+
+/* CAMERA STOP */
+function stopCamera(){
+if(streamRef){
+streamRef.getTracks().forEach(t=>t.stop());
+streamRef=null;
+video.srcObject=null;
+}
+}
+
+/* ZOOM */
 function zoom(v){
 zoomLevel+=v;
 if(zoomLevel<1)zoomLevel=1;
@@ -343,7 +372,7 @@ if(zoomLevel>2.5)zoomLevel=2.5;
 video.style.transform=`scale(${zoomLevel})`;
 }
 
-/* ===== FRAME ===== */
+/* FRAME */
 function setSession(n){
 
 sessionCount=n;
@@ -373,7 +402,7 @@ list.appendChild(d);
 });
 }
 
-/* ===== STICKER ===== */
+/* STICKER */
 function addSticker(t){
 const el=document.createElement("div");
 el.className="sticker";
@@ -401,31 +430,7 @@ el.style.top=(e.clientY-oy)+"px";
 document.onpointerup=()=>drag=false;
 }
 
-/* ===== CAPTURE ===== */
-function capture(){
-const c=document.createElement("canvas");
-c.width=video.videoWidth;
-c.height=video.videoHeight;
-
-const ctx=c.getContext("2d");
-ctx.drawImage(video,0,0);
-
-photos.push(c.toDataURL());
-
-const div=document.createElement("div");
-div.className="photo-item";
-
-const img=document.createElement("img");
-img.src=c.toDataURL();
-
-div.appendChild(img);
-photosDiv.appendChild(div);
-
-document.body.classList.add("flash");
-setTimeout(()=>document.body.classList.remove("flash"),200);
-}
-
-/* ===== START ===== */
+/* START CAPTURE */
 async function start(){
 
 photos=[];
@@ -438,7 +443,31 @@ await new Promise(r=>setTimeout(r,1000));
 }
 
 document.getElementById("countdown").innerText="📸";
-capture();
+
+const c=document.createElement("canvas");
+c.width=video.videoWidth;
+c.height=video.videoHeight;
+
+c.getContext("2d").drawImage(video,0,0);
+
+const url=c.toDataURL();
+photos.push(url);
+
+const div=document.createElement("div");
+div.className="photo-item";
+
+const img=document.createElement("img");
+img.src=url;
+
+const del=document.createElement("button");
+del.className="del";
+del.innerText="×";
+del.onclick=()=>div.remove();
+
+div.appendChild(img);
+div.appendChild(del);
+document.getElementById("photos").appendChild(div);
+
 await new Promise(r=>setTimeout(r,500));
 }
 
