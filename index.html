@@ -15,7 +15,7 @@ min-height:100vh;
 color:#333;
 }
 
-/* ===== TOP NAV (NEW MODERN MENU) ===== */
+/* NAV */
 nav{
 position:sticky;
 top:0;
@@ -24,78 +24,14 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:16px 40px;
-background:rgba(255,255,255,.7);
-backdrop-filter:blur(14px);
-border-bottom:1px solid rgba(255,255,255,.4);
+background:rgba(255,255,255,.8);
+backdrop-filter:blur(12px);
+box-shadow:0 2px 20px rgba(0,0,0,.08);
 }
 
-.logo{
-font-size:18px;
-font-weight:700;
-}
+.logo{font-weight:bold}
 
-/* MENU WRAP */
-.menu{
-display:flex;
-gap:10px;
-}
-
-/* MENU ITEM */
-.menu-item{
-position:relative;
-}
-
-.menu-btn{
-padding:10px 14px;
-border-radius:14px;
-cursor:pointer;
-font-weight:600;
-transition:.2s;
-user-select:none;
-}
-
-.menu-btn:hover{
-background:linear-gradient(90deg,#ff5c8a,#7b61ff);
-color:white;
-transform:translateY(-1px);
-}
-
-/* DROPDOWN PANEL */
-.dropdown{
-position:absolute;
-top:45px;
-left:0;
-min-width:210px;
-background:white;
-border-radius:16px;
-box-shadow:0 15px 35px rgba(0,0,0,.15);
-overflow:hidden;
-
-max-height:0;
-opacity:0;
-transform:translateY(10px);
-transition:.25s ease;
-}
-
-.menu-item:hover .dropdown{
-max-height:300px;
-opacity:1;
-transform:translateY(0);
-}
-
-/* DROPDOWN ITEM */
-.dropdown div{
-padding:12px 14px;
-cursor:pointer;
-transition:.2s;
-}
-
-.dropdown div:hover{
-background:linear-gradient(90deg,#ff5c8a,#7b61ff);
-color:white;
-}
-
-/* ===== MAIN LAYOUT ===== */
+/* MAIN */
 .main{
 display:flex;
 gap:20px;
@@ -105,36 +41,18 @@ padding:20px;
 flex-wrap:wrap;
 }
 
-/* ===== SETTINGS PANEL ===== */
+/* SIDEBAR */
 .sidebar{
 flex:1;
 min-width:260px;
-background:rgba(255,255,255,.65);
-backdrop-filter:blur(14px);
-border-radius:22px;
+background:rgba(255,255,255,.6);
+backdrop-filter:blur(12px);
+border-radius:20px;
 padding:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
-/* CARD */
-.card{
-background:white;
-border-radius:16px;
-padding:12px;
-margin-bottom:12px;
-box-shadow:0 5px 15px rgba(0,0,0,.06);
-}
-
-/* CUSTOM SELECT STYLE */
-select{
-width:100%;
-padding:10px;
-border-radius:12px;
-border:1px solid #eee;
-outline:none;
-}
-
-/* ===== CAMERA ===== */
+/* CAMERA */
 .camera{
 flex:2;
 min-width:500px;
@@ -143,7 +61,7 @@ min-width:500px;
 .camera-box{
 position:relative;
 background:white;
-border-radius:20px;
+border-radius:18px;
 overflow:hidden;
 box-shadow:0 10px 30px rgba(0,0,0,.1);
 }
@@ -153,20 +71,25 @@ width:100%;
 display:block;
 }
 
-/* LIVE */
+/* 🔴 LIVE SMALLER */
 .live{
 position:absolute;
-top:10px;
-left:10px;
+top:8px;
+left:8px;
 display:flex;
 align-items:center;
-gap:6px;
+gap:5px;
+font-size:11px;
 font-weight:bold;
+background:rgba(255,255,255,.7);
+padding:3px 6px;
+border-radius:12px;
+backdrop-filter:blur(5px);
 }
 
 .dot{
-width:10px;
-height:10px;
+width:7px;
+height:7px;
 background:red;
 border-radius:50%;
 animation:pulse 1s infinite;
@@ -187,12 +110,14 @@ height:100%;
 pointer-events:none;
 }
 
+/* 🧸 STICKER */
 .sticker{
 position:absolute;
 font-size:32px;
-pointer-events:auto;
 cursor:grab;
 user-select:none;
+pointer-events:auto;
+transform-origin:center;
 }
 
 /* BUTTONS */
@@ -229,93 +154,29 @@ color:#ff4d6d;
 
 <body>
 
-<!-- ===== NEW MENU ===== -->
 <nav>
-
 <div class="logo">📸 Photobooth With Me</div>
-
-<div class="menu">
-
-<!-- TREND -->
-<div class="menu-item">
-<div class="menu-btn">Trend ✨</div>
-<div class="dropdown">
-<div>Pink Korean</div>
-<div>Neon Glow</div>
-<div>Retro Film</div>
-<div>Soft Pastel</div>
-</div>
-</div>
-
-<!-- FRAMES -->
-<div class="menu-item">
-<div class="menu-btn">Frames 🖼</div>
-<div class="dropdown">
-<div>Classic Strip</div>
-<div>Korean Booth</div>
-<div>Birthday Cute</div>
-<div>Minimal White</div>
-</div>
-</div>
-
-<!-- FILTERS -->
-<div class="menu-item">
-<div class="menu-btn">Filters 🎨</div>
-<div class="dropdown">
-<div>Soft Pink</div>
-<div>Vintage</div>
-<div>Black & White</div>
-<div>Warm Glow</div>
-</div>
-</div>
-
-<!-- GALLERY -->
-<div class="menu-item">
-<div class="menu-btn">Gallery 📷</div>
-<div class="dropdown">
-<div>My Photos</div>
-<div>Saved Strips</div>
-<div>Trending</div>
-</div>
-</div>
-
-</div>
 </nav>
 
-<!-- ===== MAIN ===== -->
 <div class="main">
 
-<!-- SETTINGS -->
+<!-- SETTINGS (giữ nguyên đơn giản) -->
 <div class="sidebar">
 
-<div class="card">
-<label>Photos</label>
-<select id="photoCount">
-<option value="2">2 Photos</option>
-<option value="4" selected>4 Photos</option>
-<option value="6">6 Photos</option>
-</select>
-</div>
+<button onclick="setPhotos(2)">2 Photos</button>
+<button onclick="setPhotos(4)">4 Photos</button>
+<button onclick="setPhotos(6)">6 Photos</button>
 
-<div class="card">
-<label>Filter</label>
-<select id="filter">
-<option value="none">Normal</option>
-<option value="grayscale(1)">B&W</option>
-<option value="sepia(1)">Vintage</option>
-</select>
-</div>
+<hr style="margin:10px 0">
 
-<div class="card">
-<label>Sticker</label>
-<select id="stickerSelect">
-<option value="💖">💖 Heart</option>
-<option value="✨">✨ Sparkle</option>
-<option value="🎀">🎀 Ribbon</option>
-<option value="🐻">🐻 Bear</option>
-</select>
-<button onclick="addStickerFromSelect()" style="margin-top:10px;width:100%">Add Sticker</button>
-</div>
+<button onclick="setFilter('none')">Normal</button>
+<button onclick="setFilter('grayscale(1)')">B&W</button>
+
+<hr style="margin:10px 0">
+
+<button onclick="addSticker('💖')">💖 Sticker</button>
+<button onclick="addSticker('✨')">✨ Sticker</button>
+<button onclick="addSticker('🎀')">🎀 Sticker</button>
 
 </div>
 
@@ -357,42 +218,58 @@ let stickers=[];
 
 /* CAMERA */
 navigator.mediaDevices.getUserMedia({video:true})
-.then(stream=>video.srcObject=stream);
+.then(s=>video.srcObject=s);
 
 /* SETTINGS */
-document.getElementById('photoCount').onchange=(e)=>{
-photoCount=parseInt(e.target.value);
-};
+function setPhotos(n){photoCount=n;}
+function setFilter(f){video.style.filter=f;}
 
-document.getElementById('filter').onchange=(e)=>{
-video.style.filter=e.target.value;
-};
+/* 🧸 ADD STICKER */
+function addSticker(icon){
 
-/* STICKER */
-function addStickerFromSelect(){
-const value=document.getElementById('stickerSelect').value;
+const el=document.createElement('div');
+el.className='sticker';
+el.innerText=icon;
+el.style.left="120px";
+el.style.top="120px";
+el.dataset.scale=1;
 
-const s=document.createElement('div');
-s.className='sticker';
-s.innerText=value;
-s.style.left="120px";
-s.style.top="120px";
+layer.appendChild(el);
+stickers.push(el);
 
-layer.appendChild(s);
-stickers.push(s);
-
-/* drag */
+/* DRAG */
 let drag=false;
+let offsetX=0;
+let offsetY=0;
 
-s.onmousedown=()=>drag=true;
+el.onmousedown=(e)=>{
+drag=true;
+offsetX=e.offsetX;
+offsetY=e.offsetY;
+};
+
 document.onmouseup=()=>drag=false;
 
 document.onmousemove=(e)=>{
 if(drag){
-s.style.left=e.pageX+'px';
-s.style.top=e.pageY+'px';
+el.style.left=(e.pageX-offsetX)+'px';
+el.style.top=(e.pageY-offsetY)+'px';
 }
 };
+
+/* 🧠 RESIZE (mouse wheel) */
+el.onwheel=(e)=>{
+e.preventDefault();
+
+let scale=parseFloat(el.dataset.scale);
+scale += e.deltaY * -0.001;
+
+scale=Math.min(Math.max(0.5,scale),3);
+
+el.dataset.scale=scale;
+el.style.transform=`scale(${scale})`;
+};
+
 }
 
 /* CAPTURE */
@@ -405,11 +282,17 @@ const ctx=canvas.getContext('2d');
 ctx.filter=getComputedStyle(video).filter;
 ctx.drawImage(video,0,0);
 
+/* draw stickers */
 stickers.forEach(st=>{
+const rect=st.getBoundingClientRect();
+const videoRect=video.getBoundingClientRect();
+
 ctx.font="40px Arial";
-ctx.fillText(st.innerText,
-parseInt(st.style.left),
-parseInt(st.style.top));
+ctx.fillText(
+st.innerText,
+rect.left - videoRect.left,
+rect.top - videoRect.top
+);
 });
 }
 
