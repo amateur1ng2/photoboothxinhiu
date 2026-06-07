@@ -65,6 +65,7 @@ video{
 width:100%;
 height:100%;
 object-fit:cover;
+transition:0.2s;
 }
 
 #layer{
@@ -72,7 +73,6 @@ position:absolute;
 inset:0;
 }
 
-/* LIVE */
 .live{
 position:absolute;
 top:10px;
@@ -85,7 +85,7 @@ font-size:12px;
 }
 
 /* ZOOM */
-.zoom{
+.zoom-controls{
 position:absolute;
 bottom:10px;
 left:10px;
@@ -93,12 +93,13 @@ display:flex;
 gap:6px;
 }
 
-.zoom button{
+.zoom-controls button{
 padding:6px 10px;
 background:white;
+border-radius:8px;
 }
 
-/* RIGHT */
+/* RIGHT PANEL */
 .panel{
 background:white;
 border-radius:14px;
@@ -116,16 +117,26 @@ width:100%;
 border-radius:10px;
 }
 
+/* STICKER */
 .sticker{
 position:absolute;
 font-size:30px;
 cursor:grab;
+user-select:none;
 }
 
+/* COUNTDOWN */
 #countdown{
 text-align:center;
 font-size:40px;
 height:60px;
+}
+
+/* CLEAR BUTTON */
+.clear-btn{
+margin-top:10px;
+background:#222;
+color:white;
 }
 
 </style>
@@ -148,13 +159,14 @@ height:60px;
 
 <hr>
 
-<button onclick="addSticker('💖')">💖</button>
-<button onclick="addSticker('✨')">✨</button>
+<button onclick="addSticker('💖')">💖 Sticker</button>
 
 <hr>
 
 <button class="primary" onclick="start()">Start</button>
 <button class="secondary" onclick="stopCamera()">Stop</button>
+
+<button class="clear-btn" onclick="clearPreview()">Clear</button>
 
 </div>
 
@@ -169,9 +181,9 @@ height:60px;
 
 <div id="layer"></div>
 
-<div class="zoom">
-<button onclick="zoom(0.1)">+</button>
-<button onclick="zoom(-0.1)">-</button>
+<div class="zoom-controls">
+<button onclick="zoomIn()">＋</button>
+<button onclick="zoomOut()">－</button>
 </div>
 
 </div>
@@ -182,7 +194,7 @@ height:60px;
 
 <!-- RIGHT -->
 <div class="panel">
-<h3>Photos</h3>
+<h3>Preview</h3>
 <div id="photos"></div>
 </div>
 
@@ -214,11 +226,20 @@ video.srcObject=null;
 }
 
 /* ZOOM */
-function zoom(v){
-zoomLevel+=v;
-if(zoomLevel<1)zoomLevel=1;
-if(zoomLevel>2.5)zoomLevel=2.5;
+function applyZoom(){
 video.style.transform=`scale(${zoomLevel})`;
+}
+
+function zoomIn(){
+zoomLevel+=0.1;
+if(zoomLevel>2.5)zoomLevel=2.5;
+applyZoom();
+}
+
+function zoomOut(){
+zoomLevel-=0.1;
+if(zoomLevel<1)zoomLevel=1;
+applyZoom();
 }
 
 /* SESSION */
@@ -231,6 +252,7 @@ function addSticker(t){
 const el=document.createElement("div");
 el.className="sticker";
 el.innerText=t;
+
 el.style.left="100px";
 el.style.top="100px";
 
@@ -253,7 +275,25 @@ el.style.top=(e.clientY-oy)+"px";
 document.onpointerup=()=>drag=false;
 }
 
-/* CAPTURE FLOW */
+/* PREVIEW */
+function addPreview(url){
+const div=document.createElement("div");
+div.className="photo";
+
+const img=document.createElement("img");
+img.src=url;
+
+div.appendChild(img);
+photosDiv.appendChild(div);
+}
+
+/* CLEAR */
+function clearPreview(){
+photos=[];
+photosDiv.innerHTML="";
+}
+
+/* START */
 async function start(){
 
 if(!stream) await startCamera();
@@ -276,14 +316,7 @@ c.getContext("2d").drawImage(video,0,0);
 const url=c.toDataURL();
 photos.push(url);
 
-const div=document.createElement("div");
-div.className="photo";
-
-const img=document.createElement("img");
-img.src=url;
-
-div.appendChild(img);
-photosDiv.appendChild(div);
+addPreview(url);
 }
 
 document.getElementById("countdown").innerText="";
