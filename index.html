@@ -11,101 +11,54 @@
 body{
 font-family:'Segoe UI',sans-serif;
 background:linear-gradient(135deg,#ffe4ec,#f5e8ff,#e6f7ff);
-min-height:100vh;
 overflow-x:hidden;
-color:#333;
 }
 
-/* ===== NAV ===== */
 nav{
-position:sticky;
-top:0;
-z-index:999;
 display:flex;
 justify-content:space-between;
-align-items:center;
-padding:14px 28px;
+padding:14px 24px;
 background:rgba(255,255,255,.85);
-backdrop-filter:blur(12px);
-box-shadow:0 2px 15px rgba(0,0,0,.08);
+backdrop-filter:blur(10px);
 }
 
-nav ul{
-display:flex;
-gap:18px;
-list-style:none;
-}
-
-nav a{
-text-decoration:none;
-color:#333;
-font-weight:600;
-}
-
-/* ===== HERO ===== */
-.hero{
-text-align:center;
-padding:28px 12px;
-}
-
-/* ===== CLEAN 3 COLUMN LAYOUT FIX ===== */
 .main{
+display:grid;
+grid-template-columns:260px 1fr 260px;
+gap:16px;
 max-width:1200px;
 margin:20px auto;
-padding:0 16px;
-
-display:grid;
-grid-template-columns:1fr 1.8fr 1fr;
-gap:20px;
-
-align-items:stretch;
+padding:0 12px;
 }
 
-/* ===== CARD BASE ===== */
-.card{
-background:rgba(255,255,255,.78);
-backdrop-filter:blur(14px);
-border-radius:18px;
-box-shadow:0 8px 24px rgba(0,0,0,.06);
-padding:14px;
-}
-
-/* ===== SIDEBAR ===== */
+/* SIDEBAR */
 .sidebar{
+background:white;
+padding:12px;
+border-radius:14px;
 display:flex;
 flex-direction:column;
 gap:10px;
 }
 
-.sidebar button{
+button{
+padding:10px;
 border:none;
-padding:10px 12px;
-border-radius:12px;
+border-radius:10px;
 cursor:pointer;
 font-weight:600;
-background:#fff;
-transition:.2s;
-width:100%;
 }
 
-.sidebar button:hover{
-transform:translateY(-1px);
-}
+.primary{background:#ff5c8a;color:white}
+.secondary{background:#7b61ff;color:white}
 
-/* ===== CAMERA CENTER ===== */
-.camera-wrap{
-display:flex;
-flex-direction:column;
-gap:12px;
-}
-
-.camera-card{
+/* CAMERA */
+.camera{
 position:relative;
-border-radius:22px;
+background:black;
+border-radius:16px;
 overflow:hidden;
 aspect-ratio:3/4;
-background:#000;
-box-shadow:0 12px 35px rgba(0,0,0,.10);
 }
 
 video{
@@ -114,146 +67,65 @@ height:100%;
 object-fit:cover;
 }
 
+#layer{
+position:absolute;
+inset:0;
+}
+
 /* LIVE */
-.live-badge{
+.live{
 position:absolute;
 top:10px;
 left:10px;
 background:red;
-color:#fff;
+color:white;
 padding:4px 10px;
 border-radius:20px;
 font-size:12px;
-z-index:2;
 }
 
 /* ZOOM */
-.zoom-controls{
+.zoom{
 position:absolute;
 bottom:10px;
 left:10px;
 display:flex;
-gap:8px;
-z-index:3;
+gap:6px;
 }
 
-.zoom-controls button{
-border:none;
+.zoom button{
 padding:6px 10px;
-border-radius:8px;
 background:white;
-cursor:pointer;
 }
 
-/* STICKERS */
-#layer{
-position:absolute;
-inset:0;
-z-index:2;
-}
-
-.sticker{
-position:absolute;
-font-size:32px;
-cursor:grab;
-user-select:none;
-}
-
-/* RIGHT PANEL */
+/* RIGHT */
 .panel{
-display:flex;
-flex-direction:column;
-gap:12px;
-}
-
-/* COUNTDOWN */
-#countdown{
-text-align:center;
-font-size:54px;
-height:70px;
-color:#ff4d6d;
-}
-
-/* FRAME */
-#frameBox{
-display:none;
-background:#fff;
+background:white;
 border-radius:14px;
-padding:10px;
-border:1px solid #eee;
+padding:12px;
 }
 
-.frame-item{
-padding:10px;
-border-radius:10px;
-cursor:pointer;
-background:#f6f6f6;
-margin:6px 0;
-transition:.2s;
-}
-
-.frame-item:hover{background:#eee}
-
-.frame-item.active{
-background:linear-gradient(90deg,#ff5c8a,#7b61ff);
-color:white;
-}
-
-/* PHOTOS */
 #photos{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+grid-template-columns:1fr;
 gap:10px;
 }
 
-.photo-item{
-position:relative;
-}
-
-.photo-item img{
+.photo img{
 width:100%;
 border-radius:10px;
 }
 
-.del{
+.sticker{
 position:absolute;
-top:5px;
-right:5px;
-width:20px;
-height:20px;
-border:none;
-border-radius:50%;
-background:red;
-color:#fff;
-cursor:pointer;
+font-size:30px;
+cursor:grab;
 }
 
-/* FLASH */
-.flash{animation:flash .2s}
-@keyframes flash{
-0%{opacity:1}
-50%{opacity:.2}
-100%{opacity:1}
-}
-
-/* BUTTONS */
-button{
-border:none;
-padding:10px 14px;
-border-radius:30px;
-cursor:pointer;
-font-weight:600;
-}
-
-.primary{background:#ff5c8a;color:#fff}
-.secondary{background:#7b61ff;color:#fff}
-.dark-btn{background:#222;color:#fff}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-.main{
-grid-template-columns:1fr;
-}
+#countdown{
+text-align:center;
+font-size:40px;
+height:60px;
 }
 
 </style>
@@ -263,56 +135,41 @@ grid-template-columns:1fr;
 
 <nav>
 <div><b>📸 Photobooth With Me</b></div>
-<ul>
-<li><a href="#">Home</a></li>
-<li><a href="#">Gallery</a></li>
-</ul>
 </nav>
-
-<div class="hero">
-<h2>Photobooth Studio</h2>
-<p>Clean layout + stable engine</p>
-</div>
 
 <div class="main">
 
 <!-- LEFT -->
-<div class="card sidebar">
+<div class="sidebar">
 
 <button onclick="setSession(2)">2 Photos</button>
 <button onclick="setSession(4)">4 Photos</button>
 <button onclick="setSession(6)">6 Photos</button>
 
-<div id="frameBox">
-<h4>Frames</h4>
-<div id="frameList"></div>
-</div>
-
 <hr>
 
 <button onclick="addSticker('💖')">💖</button>
 <button onclick="addSticker('✨')">✨</button>
-<button onclick="addSticker('🎀')">🎀</button>
 
 <hr>
 
-<button class="primary" onclick="startCamera()">Start</button>
+<button class="primary" onclick="start()">Start</button>
 <button class="secondary" onclick="stopCamera()">Stop</button>
 
 </div>
 
 <!-- CENTER -->
-<div class="camera-wrap">
+<div>
 
-<div class="camera-card">
+<div class="camera">
 
-<div class="live-badge">🔴 LIVE</div>
+<div class="live">LIVE</div>
 
 <video id="video" autoplay playsinline></video>
 
 <div id="layer"></div>
 
-<div class="zoom-controls">
+<div class="zoom">
 <button onclick="zoom(0.1)">+</button>
 <button onclick="zoom(-0.1)">-</button>
 </div>
@@ -321,45 +178,37 @@ grid-template-columns:1fr;
 
 <div id="countdown"></div>
 
-<div id="photos"></div>
-
 </div>
 
 <!-- RIGHT -->
-<div class="card panel">
-<h3>Preview</h3>
+<div class="panel">
+<h3>Photos</h3>
 <div id="photos"></div>
 </div>
 
 </div>
 
-<canvas id="canvas" style="display:none"></canvas>
-
 <script>
+
+let stream=null;
+let photos=[];
+let count=4;
+let zoomLevel=1;
 
 const video=document.getElementById("video");
 const layer=document.getElementById("layer");
+const photosDiv=document.getElementById("photos");
 
-let streamRef=null;
-let photos=[];
-let sessionCount=4;
-let zoomLevel=1;
-
-/* CAMERA START */
-function startCamera(){
-
-navigator.mediaDevices.getUserMedia({video:true})
-.then(stream=>{
+/* CAMERA */
+async function startCamera(){
+stream = await navigator.mediaDevices.getUserMedia({video:true});
 video.srcObject=stream;
-streamRef=stream;
-});
 }
 
-/* CAMERA STOP */
 function stopCamera(){
-if(streamRef){
-streamRef.getTracks().forEach(t=>t.stop());
-streamRef=null;
+if(stream){
+stream.getTracks().forEach(t=>t.stop());
+stream=null;
 video.srcObject=null;
 }
 }
@@ -372,34 +221,9 @@ if(zoomLevel>2.5)zoomLevel=2.5;
 video.style.transform=`scale(${zoomLevel})`;
 }
 
-/* FRAME */
+/* SESSION */
 function setSession(n){
-
-sessionCount=n;
-
-const box=document.getElementById("frameBox");
-const list=document.getElementById("frameList");
-
-box.style.display="block";
-list.innerHTML="";
-
-let frames=[
-{name:"Grid",type:"grid"},
-{name:"Split",type:"split"}
-];
-
-frames.forEach(f=>{
-const d=document.createElement("div");
-d.className="frame-item";
-d.innerText=f.name;
-
-d.onclick=()=>{
-document.querySelectorAll(".frame-item").forEach(x=>x.classList.remove("active"));
-d.classList.add("active");
-};
-
-list.appendChild(d);
-});
+count=n;
 }
 
 /* STICKER */
@@ -407,9 +231,8 @@ function addSticker(t){
 const el=document.createElement("div");
 el.className="sticker";
 el.innerText=t;
-
-el.style.left="120px";
-el.style.top="120px";
+el.style.left="100px";
+el.style.top="100px";
 
 layer.appendChild(el);
 
@@ -430,19 +253,19 @@ el.style.top=(e.clientY-oy)+"px";
 document.onpointerup=()=>drag=false;
 }
 
-/* START CAPTURE */
+/* CAPTURE FLOW */
 async function start(){
+
+if(!stream) await startCamera();
 
 photos=[];
 
-for(let i=0;i<sessionCount;i++){
+for(let i=0;i<count;i++){
 
 for(let s=3;s>0;s--){
 document.getElementById("countdown").innerText=s;
 await new Promise(r=>setTimeout(r,1000));
 }
-
-document.getElementById("countdown").innerText="📸";
 
 const c=document.createElement("canvas");
 c.width=video.videoWidth;
@@ -454,21 +277,13 @@ const url=c.toDataURL();
 photos.push(url);
 
 const div=document.createElement("div");
-div.className="photo-item";
+div.className="photo";
 
 const img=document.createElement("img");
 img.src=url;
 
-const del=document.createElement("button");
-del.className="del";
-del.innerText="×";
-del.onclick=()=>div.remove();
-
 div.appendChild(img);
-div.appendChild(del);
-document.getElementById("photos").appendChild(div);
-
-await new Promise(r=>setTimeout(r,500));
+photosDiv.appendChild(div);
 }
 
 document.getElementById("countdown").innerText="";
