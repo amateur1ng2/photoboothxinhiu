@@ -12,7 +12,6 @@ body{
 font-family:'Segoe UI',sans-serif;
 background:linear-gradient(135deg,#ffe4ec,#f3e8ff,#e6f7ff);
 min-height:100vh;
-color:#333;
 }
 
 /* NAV */
@@ -24,12 +23,63 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:16px 40px;
-background:rgba(255,255,255,.8);
+background:rgba(255,255,255,.85);
 backdrop-filter:blur(12px);
 box-shadow:0 2px 20px rgba(0,0,0,.08);
 }
 
 .logo{font-weight:bold}
+
+nav ul{
+display:flex;
+gap:20px;
+list-style:none;
+}
+
+nav li{position:relative}
+
+nav a{
+text-decoration:none;
+color:#333;
+font-weight:600;
+padding:8px 12px;
+border-radius:10px;
+}
+
+nav a:hover{
+background:#ff5c8a;
+color:white;
+}
+
+.dropdown{
+position:absolute;
+top:40px;
+left:0;
+background:white;
+min-width:180px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+opacity:0;
+visibility:hidden;
+transform:translateY(10px);
+transition:.2s;
+}
+
+nav li:hover .dropdown{
+opacity:1;
+visibility:visible;
+transform:translateY(0);
+}
+
+.dropdown a{
+display:block;
+padding:10px 12px;
+}
+
+.dropdown a:hover{
+background:linear-gradient(90deg,#ff5c8a,#7b61ff);
+color:white;
+}
 
 /* MAIN */
 .main{
@@ -52,6 +102,15 @@ padding:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
+/* CARD STYLE (LIVE = SAME SIZE AS SETTINGS CARD) */
+.card{
+background:white;
+border-radius:16px;
+padding:12px;
+margin-bottom:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.06);
+}
+
 /* CAMERA */
 .camera{
 flex:2;
@@ -71,25 +130,26 @@ width:100%;
 display:block;
 }
 
-/* 🔴 LIVE SMALLER */
+/* 🔴 LIVE NOW SAME SIZE AS CARD */
 .live{
 position:absolute;
-top:8px;
-left:8px;
+top:10px;
+left:10px;
+width:140px;
 display:flex;
 align-items:center;
-gap:5px;
-font-size:11px;
+gap:6px;
+font-size:12px;
 font-weight:bold;
-background:rgba(255,255,255,.7);
-padding:3px 6px;
-border-radius:12px;
-backdrop-filter:blur(5px);
+background:white;
+padding:8px 10px;
+border-radius:14px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
 }
 
 .dot{
-width:7px;
-height:7px;
+width:8px;
+height:8px;
 background:red;
 border-radius:50%;
 animation:pulse 1s infinite;
@@ -100,33 +160,29 @@ animation:pulse 1s infinite;
 50%{transform:scale(1.6);opacity:.4}
 }
 
-/* STICKER LAYER */
+/* STICKER */
 #layer{
 position:absolute;
 top:0;
 left:0;
 width:100%;
 height:100%;
-pointer-events:none;
 }
 
-/* 🧸 STICKER */
 .sticker{
 position:absolute;
-font-size:32px;
+font-size:34px;
 cursor:grab;
 user-select:none;
-pointer-events:auto;
-transform-origin:center;
+touch-action:none;
 }
 
-/* BUTTONS */
+/* CONTROLS */
 .controls{
 display:flex;
 gap:10px;
 justify-content:center;
 margin-top:12px;
-flex-wrap:wrap;
 }
 
 button{
@@ -154,29 +210,51 @@ color:#ff4d6d;
 
 <body>
 
+<!-- NAV -->
 <nav>
 <div class="logo">📸 Photobooth With Me</div>
+
+<ul>
+<li><a href="#">Trend</a>
+<div class="dropdown">
+<a>Pink</a>
+<a>Neon</a>
+<a>Retro</a>
+</div>
+</li>
+
+<li><a href="#">Frames</a>
+<div class="dropdown">
+<a>Korean</a>
+<a>Minimal</a>
+</div>
+</li>
+
+<li><a href="#">Filters</a>
+<div class="dropdown">
+<a>Soft</a>
+<a>Vintage</a>
+</div>
+</li>
+</ul>
 </nav>
 
 <div class="main">
 
-<!-- SETTINGS (giữ nguyên đơn giản) -->
+<!-- SIDEBAR -->
 <div class="sidebar">
 
+<div class="card">
 <button onclick="setPhotos(2)">2 Photos</button>
 <button onclick="setPhotos(4)">4 Photos</button>
 <button onclick="setPhotos(6)">6 Photos</button>
+</div>
 
-<hr style="margin:10px 0">
-
-<button onclick="setFilter('none')">Normal</button>
-<button onclick="setFilter('grayscale(1)')">B&W</button>
-
-<hr style="margin:10px 0">
-
-<button onclick="addSticker('💖')">💖 Sticker</button>
-<button onclick="addSticker('✨')">✨ Sticker</button>
-<button onclick="addSticker('🎀')">🎀 Sticker</button>
+<div class="card">
+<button onclick="addSticker('💖')">💖</button>
+<button onclick="addSticker('✨')">✨</button>
+<button onclick="addSticker('🎀')">🎀</button>
+</div>
 
 </div>
 
@@ -185,12 +263,13 @@ color:#ff4d6d;
 
 <div class="camera-box">
 
+<!-- 🔴 LIVE SMALL CARD STYLE -->
 <div class="live">
-<div class="dot"></div> LIVE
+<div class="dot"></div>
+LIVE
 </div>
 
 <video id="video" autoplay playsinline></video>
-
 <div id="layer"></div>
 
 </div>
@@ -198,9 +277,9 @@ color:#ff4d6d;
 <div id="countdown"></div>
 
 <div class="controls">
-<button class="start" id="startBtn">Start</button>
-<button class="stop" id="stopBtn">Stop</button>
-<button class="reset" id="resetBtn">Reset</button>
+<button class="start" id="start">Start</button>
+<button class="stop" id="stop">Stop</button>
+<button class="reset" id="reset">Reset</button>
 </div>
 
 </div>
@@ -216,95 +295,89 @@ let running=false;
 let photoCount=4;
 let stickers=[];
 
-/* CAMERA */
+/* camera */
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* SETTINGS */
-function setPhotos(n){photoCount=n;}
-function setFilter(f){video.style.filter=f;}
+/* settings */
+function setPhotos(n){photoCount=n}
 
-/* 🧸 ADD STICKER */
+/* sticker */
 function addSticker(icon){
 
 const el=document.createElement('div');
 el.className='sticker';
 el.innerText=icon;
+
 el.style.left="120px";
 el.style.top="120px";
-el.dataset.scale=1;
 
 layer.appendChild(el);
 stickers.push(el);
 
-/* DRAG */
 let drag=false;
 let offsetX=0;
 let offsetY=0;
 
-el.onmousedown=(e)=>{
+/* drag */
+el.addEventListener('pointerdown',(e)=>{
 drag=true;
-offsetX=e.offsetX;
-offsetY=e.offsetY;
-};
+offsetX=e.clientX - el.offsetLeft;
+offsetY=e.clientY - el.offsetTop;
+el.setPointerCapture(e.pointerId);
+});
 
-document.onmouseup=()=>drag=false;
+el.addEventListener('pointermove',(e)=>{
+if(!drag) return;
+el.style.left=(e.clientX - offsetX)+'px';
+el.style.top=(e.clientY - offsetY)+'px';
+});
 
-document.onmousemove=(e)=>{
-if(drag){
-el.style.left=(e.pageX-offsetX)+'px';
-el.style.top=(e.pageY-offsetY)+'px';
-}
-};
+el.addEventListener('pointerup',()=>drag=false);
 
-/* 🧠 RESIZE (mouse wheel) */
-el.onwheel=(e)=>{
+/* resize */
+el.addEventListener('wheel',(e)=>{
 e.preventDefault();
 
-let scale=parseFloat(el.dataset.scale);
-scale += e.deltaY * -0.001;
+let scale=el.dataset.scale?parseFloat(el.dataset.scale):1;
 
-scale=Math.min(Math.max(0.5,scale),3);
+scale += e.deltaY * -0.001;
+scale=Math.max(0.5,Math.min(3,scale));
 
 el.dataset.scale=scale;
 el.style.transform=`scale(${scale})`;
-};
-
+});
 }
 
-/* CAPTURE */
+/* capture */
 function capture(){
 const canvas=document.createElement('canvas');
 canvas.width=video.videoWidth;
 canvas.height=video.videoHeight;
 
 const ctx=canvas.getContext('2d');
-ctx.filter=getComputedStyle(video).filter;
 ctx.drawImage(video,0,0);
 
-/* draw stickers */
 stickers.forEach(st=>{
 const rect=st.getBoundingClientRect();
-const videoRect=video.getBoundingClientRect();
+const cam=document.querySelector('.camera-box').getBoundingClientRect();
 
 ctx.font="40px Arial";
 ctx.fillText(
 st.innerText,
-rect.left - videoRect.left,
-rect.top - videoRect.top
+rect.left-cam.left,
+rect.top-cam.top
 );
 });
 }
 
-/* START */
-document.getElementById('startBtn').onclick=async()=>{
-
+/* start */
+document.getElementById('start').onclick=async()=>{
 running=true;
 layer.innerHTML='';
 stickers=[];
 
 for(let i=0;i<photoCount;i++){
-
 if(!running) break;
 
 for(let c=3;c>0;c--){
@@ -314,21 +387,20 @@ await new Promise(r=>setTimeout(r,1000));
 
 document.getElementById('countdown').innerText="📸";
 capture();
-
 await new Promise(r=>setTimeout(r,500));
 }
 
 document.getElementById('countdown').innerText="";
 };
 
-/* STOP */
-document.getElementById('stopBtn').onclick=()=>{
+/* stop */
+document.getElementById('stop').onclick=()=>{
 running=false;
 document.getElementById('countdown').innerText="";
 };
 
-/* RESET */
-document.getElementById('resetBtn').onclick=()=>{
+/* reset */
+document.getElementById('reset').onclick=()=>{
 running=false;
 layer.innerHTML='';
 stickers=[];
