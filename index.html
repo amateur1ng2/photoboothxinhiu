@@ -8,17 +8,15 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-html{scroll-behavior:smooth}
-
 body{
 font-family:'Segoe UI',sans-serif;
 background:linear-gradient(135deg,#ffe4ec,#f5e8ff,#e6f7ff);
 min-height:100vh;
-color:#333;
 overflow-x:hidden;
+color:#333;
 }
 
-/* ===== NAV (GIỮ NGUYÊN) ===== */
+/* ===== TOP BAR ===== */
 nav{
 position:sticky;
 top:0;
@@ -26,10 +24,10 @@ z-index:999;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:16px 28px;
+padding:14px 28px;
 background:rgba(255,255,255,.85);
 backdrop-filter:blur(12px);
-box-shadow:0 2px 18px rgba(0,0,0,.08);
+box-shadow:0 2px 15px rgba(0,0,0,.08);
 }
 
 nav ul{
@@ -38,35 +36,43 @@ gap:18px;
 list-style:none;
 }
 
-nav a{text-decoration:none;color:inherit;font-weight:600}
-
-/* ===== HERO ===== */
-.hero{
-text-align:center;
-padding:40px 20px;
+nav a{
+text-decoration:none;
+color:#333;
+font-weight:600;
 }
 
-/* ===== MAIN FIXED LAYOUT ===== */
+/* ===== PAGE TITLE ===== */
+.hero{
+text-align:center;
+padding:28px 12px;
+}
+
+/* ===== MAIN GRID (CLEAN REDESIGN) ===== */
 .main{
-display:grid;
-grid-template-columns:260px minmax(0,1fr) 280px;
-gap:18px;
 max-width:1200px;
-margin:20px auto;
-padding:0 12px;
+margin:auto;
+display:grid;
+grid-template-columns:280px 1fr 300px;
+gap:18px;
+padding:10px 14px;
 align-items:start;
 }
 
-/* ===== SIDEBAR CLEAN ===== */
-.sidebar{
-background:rgba(255,255,255,.78);
+/* ===== CARD BASE STYLE ===== */
+.card{
+background:rgba(255,255,255,.75);
 backdrop-filter:blur(14px);
 border-radius:18px;
+box-shadow:0 8px 24px rgba(0,0,0,.06);
 padding:14px;
+}
+
+/* ===== LEFT PANEL ===== */
+.sidebar{
 display:flex;
 flex-direction:column;
 gap:12px;
-box-shadow:0 8px 24px rgba(0,0,0,.06);
 }
 
 .sidebar button{
@@ -75,6 +81,7 @@ padding:10px 12px;
 border-radius:12px;
 cursor:pointer;
 font-weight:600;
+background:#fff;
 transition:.2s;
 }
 
@@ -82,22 +89,28 @@ transition:.2s;
 transform:translateY(-1px);
 }
 
-/* ===== CAMERA ===== */
-.camera-section{flex:1}
-
-.camera-card{
-background:white;
-border-radius:20px;
-padding:10px;
-box-shadow:0 10px 30px rgba(0,0,0,.08);
-position:relative;
-overflow:hidden;
-aspect-ratio:3/4;
+/* ===== CENTER CAMERA ===== */
+.camera-wrap{
 display:flex;
-align-items:center;
-justify-content:center;
+flex-direction:column;
+gap:10px;
 }
 
+.camera-card{
+position:relative;
+border-radius:18px;
+overflow:hidden;
+aspect-ratio:3/4;
+background:#000;
+}
+
+video{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* LIVE BADGE */
 .live-badge{
 position:absolute;
 top:10px;
@@ -110,62 +123,52 @@ font-size:12px;
 z-index:2;
 }
 
-/* VIDEO */
-video{
-width:100%;
-height:100%;
-object-fit:cover;
-border-radius:16px;
-transition:.2s;
-}
-
-/* ===== STICKER LAYER (GIỮ NGUYÊN LOGIC) ===== */
-#layer{
+/* ZOOM */
+.zoom-controls{
 position:absolute;
-inset:0;
+bottom:10px;
+left:10px;
+display:flex;
+gap:8px;
 z-index:3;
 }
 
-.sticker{
-position:absolute;
-font-size:32px;
-cursor:grab;
-user-select:none;
-transform-origin:center;
+.zoom-controls button{
+border:none;
+padding:6px 10px;
+border-radius:8px;
+background:white;
+cursor:pointer;
 }
 
-.sticker img{
-width:60px;
-pointer-events:none;
+/* STICKERS LAYER */
+#layer{
+position:absolute;
+inset:0;
+z-index:2;
 }
 
 /* ===== RIGHT PANEL ===== */
 .panel{
-background:rgba(255,255,255,.78);
-backdrop-filter:blur(14px);
-border-radius:18px;
-padding:14px;
-box-shadow:0 8px 24px rgba(0,0,0,.06);
 display:flex;
 flex-direction:column;
-gap:10px;
+gap:12px;
 }
 
 /* ===== COUNTDOWN ===== */
 #countdown{
-font-size:58px;
 text-align:center;
+font-size:54px;
 height:70px;
 color:#ff4d6d;
-margin-top:8px;
 }
 
 /* ===== FRAME BOX ===== */
 #frameBox{
 display:none;
 background:#fff;
-padding:10px;
 border-radius:14px;
+padding:10px;
 border:1px solid #eee;
 }
 
@@ -187,12 +190,11 @@ background:linear-gradient(90deg,#ff5c8a,#7b61ff);
 color:white;
 }
 
-/* ===== PHOTOS ===== */
+/* ===== PHOTO GRID ===== */
 #photos{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
 gap:10px;
-margin-top:10px;
 }
 
 .photo-item{
@@ -208,29 +210,24 @@ border-radius:10px;
 position:absolute;
 top:5px;
 right:5px;
+width:20px;
+height:20px;
+border:none;
+border-radius:50%;
 background:red;
 color:white;
-border:none;
-width:22px;
-height:22px;
-border-radius:50%;
 cursor:pointer;
 }
 
-/* ===== BUTTONS ===== */
-button{
-border:none;
-padding:10px 14px;
-border-radius:30px;
-cursor:pointer;
-font-weight:600;
+/* ===== STICKERS ===== */
+.sticker{
+position:absolute;
+font-size:32px;
+cursor:grab;
+user-select:none;
 }
 
-.primary{background:#ff5c8a;color:#fff}
-.secondary{background:#7b61ff;color:#fff}
-.dark-btn{background:#222;color:#fff}
-
-/* ===== FLASH ===== */
+/* FLASH */
 .flash{
 animation:flash .2s;
 }
@@ -240,26 +237,10 @@ animation:flash .2s;
 100%{opacity:1}
 }
 
-/* ===== DARK MODE ===== */
-.dark{
-background:#111;
-color:#fff;
-}
-.dark nav,
-.dark .sidebar,
-.dark .camera-card,
-.dark .panel{
-background:#222 !important;
-color:#fff;
-}
-
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media(max-width:900px){
 .main{
 grid-template-columns:1fr;
-}
-.camera-card{
-aspect-ratio:3/4;
 }
 }
 
@@ -276,15 +257,15 @@ aspect-ratio:3/4;
 </ul>
 </nav>
 
-<section class="hero">
-<h1>Photobooth With Me</h1>
-<p>Korean-style photostrip creator</p>
-</section>
+<div class="hero">
+<h2>Photobooth Studio</h2>
+<p>Clean UI – Korean style layout</p>
+</div>
 
 <div class="main">
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+<!-- LEFT -->
+<div class="card sidebar">
 
 <button onclick="setSession(2)">2 Photos</button>
 <button onclick="setSession(4)">4 Photos</button>
@@ -297,21 +278,16 @@ aspect-ratio:3/4;
 
 <hr>
 
-<!-- STICKERS -->
 <button onclick="addSticker('💖')">💖</button>
 <button onclick="addSticker('✨')">✨</button>
 <button onclick="addSticker('🎀')">🎀</button>
-<button onclick="addSticker('🐱')">🐱</button>
 
-<hr>
-
-<button class="primary" onclick="start()">Start</button>
-<button class="dark-btn" onclick="document.body.classList.toggle('dark')">Dark</button>
+<button onclick="start()">Start</button>
 
 </div>
 
-<!-- CAMERA -->
-<div class="camera-section">
+<!-- CENTER -->
+<div class="camera-wrap">
 
 <div class="camera-card">
 
@@ -321,20 +297,21 @@ aspect-ratio:3/4;
 
 <div id="layer"></div>
 
+<div class="zoom-controls">
+<button onclick="zoom(0.1)">+</button>
+<button onclick="zoom(-0.1)">-</button>
+</div>
+
 </div>
 
 <div id="countdown"></div>
-
-<div class="buttons">
-<button class="secondary" onclick="start()">Start</button>
-</div>
 
 <div id="photos"></div>
 
 </div>
 
-<!-- PANEL -->
-<div class="panel">
+<!-- RIGHT -->
+<div class="card panel">
 <h3>Preview</h3>
 <div id="photos"></div>
 </div>
@@ -345,58 +322,58 @@ aspect-ratio:3/4;
 
 <script>
 
+/* ===== CAMERA ===== */
 const video=document.getElementById("video");
 const layer=document.getElementById("layer");
 const photosDiv=document.getElementById("photos");
-const frameBox=document.getElementById("frameBox");
-const frameList=document.getElementById("frameList");
 
 let photos=[];
 let sessionCount=4;
-let selectedFrame="4grid";
+let zoomLevel=1;
 
-/* CAMERA */
+/* start camera */
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* FRAME */
+/* ===== ZOOM ===== */
+function zoom(v){
+zoomLevel+=v;
+if(zoomLevel<1)zoomLevel=1;
+if(zoomLevel>2.5)zoomLevel=2.5;
+video.style.transform=`scale(${zoomLevel})`;
+}
+
+/* ===== FRAME ===== */
 function setSession(n){
 
 sessionCount=n;
-frameBox.style.display="block";
-frameList.innerHTML="";
 
-let frames=[];
+const box=document.getElementById("frameBox");
+const list=document.getElementById("frameList");
 
-if(n==2)frames=[
-{name:"Horizontal",type:"2h"},
-{name:"Vertical",type:"2v"}
-];
+box.style.display="block";
+list.innerHTML="";
 
-if(n==4)frames=[
-{name:"Grid 2x2",type:"4grid"}
-];
-
-if(n==6)frames=[
-{name:"Grid 3x2",type:"6grid"}
+let frames=[
+{name:"Grid",type:"grid"},
+{name:"Split",type:"split"}
 ];
 
 frames.forEach(f=>{
-const div=document.createElement("div");
-div.className="frame-item";
-div.innerText=f.name;
+const d=document.createElement("div");
+d.className="frame-item";
+d.innerText=f.name;
 
-div.onclick=()=>{
-selectedFrame=f.type;
-document.querySelectorAll(".frame-item").forEach(e=>e.classList.remove("active"));
-div.classList.add("active");
+d.onclick=()=>{
+document.querySelectorAll(".frame-item").forEach(x=>x.classList.remove("active"));
+d.classList.add("active");
 };
 
-frameList.appendChild(div);
+list.appendChild(d);
 });
 }
 
-/* STICKER */
+/* ===== STICKER ===== */
 function addSticker(t){
 const el=document.createElement("div");
 el.className="sticker";
@@ -424,7 +401,7 @@ el.style.top=(e.clientY-oy)+"px";
 document.onpointerup=()=>drag=false;
 }
 
-/* CAPTURE */
+/* ===== CAPTURE ===== */
 function capture(){
 const c=document.createElement("canvas");
 c.width=video.videoWidth;
@@ -434,9 +411,21 @@ const ctx=c.getContext("2d");
 ctx.drawImage(video,0,0);
 
 photos.push(c.toDataURL());
+
+const div=document.createElement("div");
+div.className="photo-item";
+
+const img=document.createElement("img");
+img.src=c.toDataURL();
+
+div.appendChild(img);
+photosDiv.appendChild(div);
+
+document.body.classList.add("flash");
+setTimeout(()=>document.body.classList.remove("flash"),200);
 }
 
-/* START */
+/* ===== START ===== */
 async function start(){
 
 photos=[];
