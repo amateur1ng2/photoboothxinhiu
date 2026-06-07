@@ -14,28 +14,6 @@ background:linear-gradient(135deg,#ffe4ec,#f3e8ff,#e6f7ff);
 overflow-x:hidden;
 }
 
-/* NAV */
-nav{
-position:sticky;
-top:0;
-z-index:999;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:14px 26px;
-background:rgba(255,255,255,.9);
-backdrop-filter:blur(12px);
-box-shadow:0 2px 20px rgba(0,0,0,.08);
-}
-
-.logo{font-weight:bold}
-
-nav ul{
-display:flex;
-gap:18px;
-list-style:none;
-}
-
 /* LAYOUT */
 .main{
 display:grid;
@@ -68,13 +46,12 @@ font-size:13px;
 
 .start{background:#ff5c8a;color:white}
 
-/* FRAME BOX */
+/* FRAME */
 #frameBox{
 display:none;
 background:white;
 padding:10px;
 border-radius:12px;
-box-shadow:0 4px 12px rgba(0,0,0,.08);
 margin-top:10px;
 }
 
@@ -87,32 +64,9 @@ background:#f3f3f3;
 transition:.2s;
 }
 
-.frame-item:hover{
-background:#eee;
-}
-
 .frame-item.active{
 background:linear-gradient(90deg,#ff5c8a,#7b61ff);
 color:white;
-transform:scale(1.02);
-}
-
-/* PREVIEW */
-.layout-preview{
-display:grid;
-gap:4px;
-height:60px;
-margin-top:6px;
-}
-
-.layout-2h{grid-template-columns:1fr 1fr}
-.layout-2v{grid-template-rows:1fr 1fr}
-.layout-4{grid-template-columns:1fr 1fr}
-.layout-6{grid-template-columns:1fr 1fr 1fr}
-
-.box{
-background:#ddd;
-border-radius:4px;
 }
 
 /* CAMERA */
@@ -128,10 +82,7 @@ video{width:100%}
 /* STICKERS */
 #layer{
 position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
+inset:0;
 }
 
 .sticker{
@@ -145,7 +96,7 @@ user-select:none;
 width:60px;
 }
 
-/* RIGHT PANEL */
+/* RIGHT */
 .panel{
 background:rgba(255,255,255,.6);
 backdrop-filter:blur(12px);
@@ -153,10 +104,27 @@ border-radius:16px;
 padding:12px;
 }
 
-.gallery img{
+.gallery-item{
+position:relative;
+margin-bottom:10px;
+}
+
+.gallery-item img{
 width:100%;
 border-radius:10px;
-margin-bottom:8px;
+}
+
+.del{
+position:absolute;
+top:5px;
+right:5px;
+background:red;
+color:white;
+border:none;
+border-radius:50%;
+width:22px;
+height:22px;
+cursor:pointer;
 }
 
 /* COUNTDOWN */
@@ -168,15 +136,25 @@ color:#ff4d6d;
 margin-top:8px;
 }
 
+/* FINAL STRIP */
+.strip{
+display:grid;
+gap:6px;
+background:white;
+padding:6px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.strip img{
+width:100%;
+border-radius:6px;
+}
+
 </style>
 </head>
 
 <body>
-
-<nav>
-<div class="logo">📸 Photobooth With Me</div>
-<ul><li>Trend</li><li>Frames</li><li>Filters</li></ul>
-</nav>
 
 <div class="main">
 
@@ -190,19 +168,6 @@ margin-top:8px;
 <div id="frameBox">
 <h4>Choose Frame</h4>
 <div id="frameList"></div>
-</div>
-
-<hr>
-
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-<button onclick="addSticker('💖')">💖</button>
-<button onclick="addSticker('✨')">✨</button>
-<button onclick="addSticker('🎀')">🎀</button>
-<button onclick="addSticker('🐻')">🐻</button>
-<button onclick="addSticker('🌸')">🌸</button>
-<button onclick="addSticker('💫')">💫</button>
-<button onclick="addStickerImg('https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif')">🐱</button>
-<button onclick="addStickerImg('https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif')">🐱</button>
 </div>
 
 <hr>
@@ -234,19 +199,20 @@ margin-top:8px;
 <script>
 
 const video=document.getElementById('video');
+const layer=document.getElementById('layer');
 const frameBox=document.getElementById('frameBox');
 const frameList=document.getElementById('frameList');
-const layer=document.getElementById('layer');
 const gallery=document.getElementById('gallery');
 
 let sessionCount=4;
-let selectedFrame="none";
+let selectedLayout="2x2";
+let capturedImages=[];
 
 /* CAMERA */
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* FRAME SYSTEM FIXED */
+/* FRAME ENGINE (REAL LOGIC) */
 function setSession(n){
 
 sessionCount=n;
@@ -256,24 +222,25 @@ frameList.innerHTML="";
 
 let frames=[];
 
+/* REAL LAYOUT OPTIONS */
 if(n===2){
 frames=[
-{name:"2 Horizontal",type:"layout-2h"},
-{name:"2 Vertical",type:"layout-2v"}
+{name:"Split Horizontal",type:"2h"},
+{name:"Split Vertical",type:"2v"}
 ];
 }
 
 if(n===4){
 frames=[
-{name:"4 Grid",type:"layout-4"},
-{name:"4 Clean Grid",type:"layout-4"}
+{name:"2x2 Grid",type:"4grid"},
+{name:"1 Large + 3 Small",type:"4mix"}
 ];
 }
 
 if(n===6){
 frames=[
-{name:"6 Grid",type:"layout-6"},
-{name:"6 Strip",type:"layout-6"}
+{name:"3x2 Grid",type:"6grid"},
+{name:"Vertical Strip",type:"6strip"}
 ];
 }
 
@@ -282,76 +249,20 @@ frames.forEach(f=>{
 const div=document.createElement("div");
 div.className="frame-item";
 
-div.innerHTML=`
-<div>${f.name}</div>
-<div class="layout-preview ${f.type}">
-<div class="box"></div><div class="box"></div>
-</div>
-`;
+div.innerHTML=`${f.name}`;
 
 div.onclick=()=>{
 
-selectedFrame=f.type;
+selectedLayout=f.type;
 
-/* highlight active */
 document.querySelectorAll(".frame-item")
-.forEach(el=>el.classList.remove("active"));
+.forEach(e=>e.classList.remove("active"));
 
 div.classList.add("active");
-
-console.log("Frame selected:", selectedFrame);
 };
 
 frameList.appendChild(div);
 });
-}
-
-/* STICKERS */
-function addSticker(t){
-
-const el=document.createElement('div');
-el.className='sticker';
-el.innerText=t;
-
-place(el);
-}
-
-function addStickerImg(url){
-
-const el=document.createElement('div');
-el.className='sticker';
-
-const img=document.createElement('img');
-img.src=url;
-
-el.appendChild(img);
-
-place(el);
-}
-
-/* DRAG */
-function place(el){
-
-el.style.left="120px";
-el.style.top="120px";
-
-layer.appendChild(el);
-
-let d=false,ox=0,oy=0;
-
-el.addEventListener('pointerdown',e=>{
-d=true;
-ox=e.clientX-el.offsetLeft;
-oy=e.clientY-el.offsetTop;
-});
-
-document.addEventListener('pointermove',e=>{
-if(!d) return;
-el.style.left=(e.clientX-ox)+'px';
-el.style.top=(e.clientY-oy)+'px';
-});
-
-document.addEventListener('pointerup',()=>d=false);
 }
 
 /* CAPTURE */
@@ -364,16 +275,85 @@ c.height=video.videoHeight;
 const ctx=c.getContext('2d');
 ctx.drawImage(video,0,0);
 
-const img=document.createElement('img');
-img.src=c.toDataURL();
+capturedImages.push(c.toDataURL());
+}
 
-gallery.appendChild(img);
+/* 🧠 REAL FRAME RENDER ENGINE */
+function renderStrip(){
+
+const c=document.createElement('canvas');
+c.width=400;
+c.height=600;
+
+const ctx=c.getContext('2d');
+
+ctx.fillStyle="white";
+ctx.fillRect(0,0,c.width,c.height);
+
+let imgs=capturedImages.map(src=>{
+let img=new Image();
+img.src=src;
+return img;
+});
+
+/* SIMPLE WAIT LOAD */
+setTimeout(()=>{
+
+if(selectedLayout==="2h"){
+ctx.drawImage(imgs[0],0,0,400,300);
+ctx.drawImage(imgs[1],0,300,400,300);
+}
+
+if(selectedLayout==="2v"){
+ctx.drawImage(imgs[0],0,0,200,600);
+ctx.drawImage(imgs[1],200,0,200,600);
+}
+
+if(selectedLayout==="4grid"){
+ctx.drawImage(imgs[0],0,0,200,300);
+ctx.drawImage(imgs[1],200,0,200,300);
+ctx.drawImage(imgs[2],0,300,200,300);
+ctx.drawImage(imgs[3],200,300,200,300);
+}
+
+if(selectedLayout==="6grid"){
+let h=200;
+ctx.drawImage(imgs[0],0,0,133,h);
+ctx.drawImage(imgs[1],133,0,133,h);
+ctx.drawImage(imgs[2],266,0,134,h);
+
+ctx.drawImage(imgs[3],0,h,133,h);
+ctx.drawImage(imgs[4],133,h,133,h);
+ctx.drawImage(imgs[5],266,h,134,h);
+}
+
+/* output */
+const final=new Image();
+final.src=c.toDataURL();
+
+const wrap=document.createElement("div");
+wrap.className="gallery-item";
+
+const del=document.createElement("button");
+del.className="del";
+del.innerText="×";
+
+del.onclick=()=>wrap.remove();
+
+wrap.appendChild(final);
+wrap.appendChild(del);
+
+gallery.appendChild(wrap);
+
+capturedImages=[];
+},300);
+
 }
 
 /* START */
 async function start(){
 
-layer.innerHTML="";
+capturedImages=[];
 
 for(let i=0;i<sessionCount;i++){
 
@@ -388,6 +368,8 @@ await new Promise(r=>setTimeout(r,500));
 }
 
 document.getElementById('countdown').innerText="";
+
+renderStrip();
 }
 
 </script>
