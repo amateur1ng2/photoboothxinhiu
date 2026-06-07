@@ -30,16 +30,10 @@ box-shadow:0 2px 20px rgba(0,0,0,.08);
 
 .logo{font-weight:bold}
 
-nav ul{display:flex;gap:18px;list-style:none}
-
-nav li{position:relative}
-
-nav a{
-text-decoration:none;
-color:#333;
-font-weight:600;
-padding:8px 10px;
-border-radius:10px;
+nav ul{
+display:flex;
+gap:18px;
+list-style:none;
 }
 
 /* LAYOUT */
@@ -63,6 +57,20 @@ flex-direction:column;
 gap:10px;
 }
 
+/* SESSION BUTTONS */
+button{
+border:none;
+padding:8px 10px;
+border-radius:10px;
+cursor:pointer;
+font-weight:600;
+font-size:13px;
+}
+
+.start{background:#ff5c8a;color:white}
+.stop{background:#ff3b3b;color:white}
+.reset{background:#7b61ff;color:white}
+
 /* STICKER GRID */
 .sticker-grid{
 display:grid;
@@ -80,19 +88,29 @@ background:white;
 box-shadow:0 4px 10px rgba(0,0,0,.08);
 }
 
-/* BUTTONS */
-button{
-border:none;
-padding:8px 10px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-font-size:13px;
+/* FRAME BOX FIX */
+#frameBox{
+display:none;
+background:white;
+padding:10px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,.08);
 }
 
-.start{background:#ff5c8a;color:white}
-.stop{background:#ff3b3b;color:white}
-.reset{background:#7b61ff;color:white}
+.frame-item{
+padding:8px;
+margin:6px 0;
+border-radius:10px;
+cursor:pointer;
+background:#f3f3f3;
+text-align:center;
+transition:.2s;
+}
+
+.frame-item:hover{
+background:linear-gradient(90deg,#ff5c8a,#7b61ff);
+color:white;
+}
 
 /* CAMERA */
 .camera-box{
@@ -110,9 +128,6 @@ video{width:100%}
 position:absolute;
 top:8px;
 left:8px;
-display:flex;
-gap:6px;
-align-items:center;
 background:rgba(255,255,255,.85);
 padding:5px 10px;
 border-radius:12px;
@@ -133,15 +148,9 @@ position:absolute;
 font-size:32px;
 cursor:grab;
 user-select:none;
-touch-action:none;
 }
 
-/* animated sticker */
-.sticker img{
-width:60px;
-}
-
-/* RIGHT PANEL */
+/* GALLERY */
 .panel{
 background:rgba(255,255,255,.6);
 backdrop-filter:blur(12px);
@@ -152,7 +161,6 @@ flex-direction:column;
 gap:10px;
 }
 
-/* GALLERY */
 .gallery{
 display:flex;
 flex-direction:column;
@@ -179,26 +187,11 @@ width:22px;
 height:22px;
 border-radius:50%;
 border:none;
-background:rgba(255(0,0,0,.8);
+background:rgba(255,0,0,.8);
 color:white;
 font-size:12px;
 cursor:pointer;
-display:flex;
-align-items:center;
-justify-content:center;
 }
-
-/* MODAL */
-#modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.7);
-display:none;
-justify-content:center;
-align-items:center;
-}
-
-#modal img{max-width:80%;border-radius:12px}
 
 /* COUNTDOWN */
 #countdown{
@@ -230,6 +223,14 @@ margin-top:8px;
 
 <hr>
 
+<!-- FRAME PICKER FIX -->
+<div id="frameBox">
+<h4>Choose Frame</h4>
+<div id="frameList"></div>
+</div>
+
+<hr>
+
 <div class="sticker-grid">
 <button onclick="addSticker('💖')">💖</button>
 <button onclick="addSticker('✨')">✨</button>
@@ -237,8 +238,6 @@ margin-top:8px;
 <button onclick="addSticker('🐻')">🐻</button>
 <button onclick="addSticker('🌸')">🌸</button>
 <button onclick="addSticker('💫')">💫</button>
-<button onclick="addSticker('🧸')">🧸</button>
-<button onclick="addSticker('🍓')">🍓</button>
 </div>
 
 <hr>
@@ -273,48 +272,67 @@ margin-top:8px;
 
 </div>
 
-<!-- MODAL -->
-<div id="modal" onclick="this.style.display='none'">
-<img id="modalImg">
-</div>
-
 <script>
 
 const video=document.getElementById('video');
 const layer=document.getElementById('layer');
 const gallery=document.getElementById('gallery');
-const modal=document.getElementById('modal');
-const modalImg=document.getElementById('modalImg');
+const frameBox=document.getElementById('frameBox');
+const frameList=document.getElementById('frameList');
 
 let sessionCount=4;
+let currentFrame="none";
 let running=false;
-let stickers=[];
 
-/* camera */
+/* CAMERA */
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* session */
-function setSession(n){sessionCount=n}
+/* SESSION + FRAME FIX */
+function setSession(n){
 
-/* stickers */
+sessionCount=n;
+
+frameBox.style.display="block";
+frameList.innerHTML="";
+
+let frames=[];
+
+if(n===2){
+frames=["Romantic Pink","Film Strip","Minimal White"];
+}
+if(n===4){
+frames=["Korean Soft","Polaroid Grid","Pastel Cute"];
+}
+if(n===6){
+frames=["Booth Classic","Retro Strip","Neon Party"];
+}
+
+frames.forEach(f=>{
+const div=document.createElement("div");
+div.className="frame-item";
+div.innerText=f;
+
+div.onclick=()=>{
+currentFrame=f;
+alert("Selected: " + f);
+};
+
+frameList.appendChild(div);
+});
+}
+
+/* STICKER */
 function addSticker(icon){
 
 const el=document.createElement('div');
 el.className='sticker';
 el.innerText=icon;
 
-place(el);
-}
-
-/* common sticker logic */
-function place(el){
-
 el.style.left="120px";
 el.style.top="120px";
 
 layer.appendChild(el);
-stickers.push(el);
 
 let drag=false,ox=0,oy=0;
 
@@ -333,7 +351,7 @@ el.style.top=(e.clientY-oy)+'px';
 document.addEventListener('pointerup',()=>drag=false);
 }
 
-/* capture */
+/* CAPTURE */
 function capture(){
 
 const canvas=document.createElement('canvas');
@@ -343,9 +361,19 @@ canvas.height=video.videoHeight;
 const ctx=canvas.getContext('2d');
 ctx.drawImage(video,0,0);
 
+/* FRAME EFFECT */
+if(currentFrame.includes("Pink")){
+ctx.fillStyle="rgba(255,105,180,0.25)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
+if(currentFrame.includes("Korean")){
+ctx.fillStyle="rgba(173,216,230,0.25)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+}
+
 const url=canvas.toDataURL();
 
-/* gallery item */
 const wrap=document.createElement('div');
 wrap.className='img-wrap';
 
@@ -353,8 +381,7 @@ const img=document.createElement('img');
 img.src=url;
 
 img.onclick=()=>{
-modal.style.display='flex';
-modalImg.src=url;
+window.open(url);
 };
 
 const del=document.createElement('button');
@@ -371,12 +398,11 @@ wrap.appendChild(del);
 gallery.appendChild(wrap);
 }
 
-/* start */
+/* START */
 async function start(){
 
 running=true;
 layer.innerHTML="";
-stickers=[];
 
 for(let i=0;i<sessionCount;i++){
 
@@ -393,16 +419,15 @@ await new Promise(r=>setTimeout(r,600));
 document.getElementById('countdown').innerText="";
 }
 
-/* stop */
+/* STOP */
 function stop(){
 running=false;
 }
 
-/* reset */
+/* RESET */
 function resetAll(){
 running=false;
 layer.innerHTML="";
-stickers=[];
 gallery.innerHTML="";
 document.getElementById('countdown').innerText="";
 }
