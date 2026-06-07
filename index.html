@@ -15,21 +15,79 @@ min-height:100vh;
 color:#333;
 }
 
-/* NAV */
+/* NAV (GIỮ NGUYÊN STRUCTURE + UPGRADE STYLE) */
 nav{
 position:sticky;
 top:0;
-z-index:10;
+z-index:999;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:15px 30px;
-background:rgba(255,255,255,.8);
-backdrop-filter:blur(10px);
+padding:18px 40px;
+background:rgba(255,255,255,.85);
+backdrop-filter:blur(12px);
 box-shadow:0 2px 20px rgba(0,0,0,.08);
 }
 
-.logo{font-weight:bold}
+.logo{font-size:20px;font-weight:bold}
+
+nav ul{
+display:flex;
+gap:20px;
+list-style:none;
+}
+
+nav li{
+position:relative;
+}
+
+nav a{
+text-decoration:none;
+color:#333;
+font-weight:600;
+padding:8px 12px;
+border-radius:10px;
+transition:.2s;
+}
+
+nav a:hover{
+background:#ff5c8a;
+color:white;
+}
+
+/* DROPDOWN MENU (GIỮ MENU CỦA BẠN + làm đẹp hơn) */
+.dropdown{
+position:absolute;
+top:40px;
+left:0;
+background:white;
+min-width:200px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+opacity:0;
+visibility:hidden;
+transform:translateY(10px);
+transition:.2s;
+overflow:hidden;
+}
+
+nav li:hover .dropdown{
+opacity:1;
+visibility:visible;
+transform:translateY(0);
+}
+
+.dropdown a{
+display:block;
+padding:12px 14px;
+color:#333;
+transition:.2s;
+}
+
+.dropdown a:hover{
+background:linear-gradient(90deg,#ff5c8a,#7b61ff);
+color:white;
+}
 
 /* MAIN */
 .main{
@@ -41,7 +99,7 @@ padding:20px;
 flex-wrap:wrap;
 }
 
-/* SIDEBAR */
+/* SIDEBAR UPGRADE (KOREAN STYLE) */
 .sidebar{
 flex:1;
 min-width:260px;
@@ -90,7 +148,7 @@ z-index:5;
 }
 
 .dd.open .dd-panel{
-max-height:250px;
+max-height:260px;
 opacity:1;
 }
 
@@ -136,7 +194,8 @@ font-weight:bold;
 }
 
 .dot{
-width:10px;height:10px;
+width:10px;
+height:10px;
 background:red;
 border-radius:50%;
 animation:pulse 1s infinite;
@@ -160,8 +219,8 @@ pointer-events:none;
 .sticker{
 position:absolute;
 font-size:30px;
-cursor:grab;
 pointer-events:auto;
+cursor:grab;
 user-select:none;
 }
 
@@ -199,8 +258,41 @@ color:#ff4d6d;
 
 <body>
 
+<!-- NAV GIỮ NGUYÊN -->
 <nav>
 <div class="logo">📸 Photobooth With Me</div>
+
+<ul>
+<li>
+<a href="#home">Home</a>
+</li>
+
+<li>
+<a href="#frames">Frames</a>
+<div class="dropdown">
+<a>Korean Style</a>
+<a>Pink Cute</a>
+<a>Minimal White</a>
+</div>
+</li>
+
+<li>
+<a href="#filters">Filters</a>
+<div class="dropdown">
+<a>Soft Pink</a>
+<a>Vintage</a>
+<a>B&W</a>
+</div>
+</li>
+
+<li>
+<a href="#gallery">Gallery</a>
+<div class="dropdown">
+<a>Saved Photos</a>
+<a>Trending</a>
+</div>
+</li>
+</ul>
 </nav>
 
 <div class="main">
@@ -274,20 +366,20 @@ let running=false;
 let photoCount=4;
 let stickers=[];
 
-/* camera */
+/* CAMERA */
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* dropdown */
+/* DROPDOWN */
 function toggle(id){
 document.getElementById(id).classList.toggle('open');
 }
 
-/* settings */
+/* SETTINGS */
 function setPhotos(n){photoCount=n;}
 function setFilter(f){video.style.filter=f;}
 
-/* sticker */
+/* STICKER */
 function addSticker(icon){
 
 const s=document.createElement('div');
@@ -299,6 +391,7 @@ s.style.top="120px";
 layer.appendChild(s);
 stickers.push(s);
 
+/* drag */
 let drag=false;
 
 s.onmousedown=()=>drag=true;
@@ -312,7 +405,7 @@ s.style.top=e.pageY+'px';
 };
 }
 
-/* capture */
+/* CAPTURE */
 function capture(){
 const canvas=document.createElement('canvas');
 canvas.width=video.videoWidth;
@@ -322,6 +415,7 @@ const ctx=canvas.getContext('2d');
 ctx.filter=getComputedStyle(video).filter;
 ctx.drawImage(video,0,0);
 
+/* draw stickers */
 stickers.forEach(st=>{
 ctx.font="40px Arial";
 ctx.fillText(st.innerText,
@@ -330,7 +424,7 @@ parseInt(st.style.top));
 });
 }
 
-/* start */
+/* START */
 document.getElementById('startBtn').onclick=async()=>{
 
 running=true;
@@ -355,13 +449,13 @@ await new Promise(r=>setTimeout(r,500));
 document.getElementById('countdown').innerText="";
 };
 
-/* stop */
+/* STOP */
 document.getElementById('stopBtn').onclick=()=>{
 running=false;
 document.getElementById('countdown').innerText="";
 };
 
-/* reset */
+/* RESET */
 document.getElementById('resetBtn').onclick=()=>{
 running=false;
 layer.innerHTML='';
