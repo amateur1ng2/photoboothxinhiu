@@ -14,7 +14,7 @@ background:linear-gradient(135deg,#ffe4ec,#f3e8ff,#e6f7ff);
 overflow-x:hidden;
 }
 
-/* NAV (GIỮ NGUYÊN Ý CŨ) */
+/* NAV */
 nav{
 position:sticky;
 top:0;
@@ -30,7 +30,11 @@ box-shadow:0 2px 20px rgba(0,0,0,.08);
 
 .logo{font-weight:bold}
 
-nav ul{display:flex;gap:18px;list-style:none}
+nav ul{
+display:flex;
+gap:18px;
+list-style:none;
+}
 
 /* LAYOUT */
 .main{
@@ -53,7 +57,6 @@ flex-direction:column;
 gap:10px;
 }
 
-/* BUTTON */
 button{
 border:none;
 padding:8px 10px;
@@ -81,6 +84,35 @@ margin:6px 0;
 border-radius:10px;
 cursor:pointer;
 background:#f3f3f3;
+transition:.2s;
+}
+
+.frame-item:hover{
+background:#eee;
+}
+
+.frame-item.active{
+background:linear-gradient(90deg,#ff5c8a,#7b61ff);
+color:white;
+transform:scale(1.02);
+}
+
+/* PREVIEW */
+.layout-preview{
+display:grid;
+gap:4px;
+height:60px;
+margin-top:6px;
+}
+
+.layout-2h{grid-template-columns:1fr 1fr}
+.layout-2v{grid-template-rows:1fr 1fr}
+.layout-4{grid-template-columns:1fr 1fr}
+.layout-6{grid-template-columns:1fr 1fr 1fr}
+
+.box{
+background:#ddd;
+border-radius:4px;
 }
 
 /* CAMERA */
@@ -93,7 +125,7 @@ overflow:hidden;
 
 video{width:100%}
 
-/* STICKERS RESTORED */
+/* STICKERS */
 #layer{
 position:absolute;
 top:0;
@@ -113,7 +145,7 @@ user-select:none;
 width:60px;
 }
 
-/* RIGHT */
+/* RIGHT PANEL */
 .panel{
 background:rgba(255,255,255,.6);
 backdrop-filter:blur(12px);
@@ -121,7 +153,6 @@ border-radius:16px;
 padding:12px;
 }
 
-/* GALLERY */
 .gallery img{
 width:100%;
 border-radius:10px;
@@ -136,21 +167,6 @@ height:50px;
 color:#ff4d6d;
 margin-top:8px;
 }
-
-/* FRAME PREVIEW */
-.layout-preview{
-display:grid;
-gap:4px;
-height:60px;
-margin-top:6px;
-}
-
-.layout-2h{grid-template-columns:1fr 1fr}
-.layout-2v{grid-template-rows:1fr 1fr}
-.layout-4{grid-template-columns:1fr 1fr}
-.layout-6{grid-template-columns:1fr 1fr 1fr}
-
-.box{background:#ddd;border-radius:4px}
 
 </style>
 </head>
@@ -171,7 +187,6 @@ margin-top:6px;
 <button onclick="setSession(4)">4 photos</button>
 <button onclick="setSession(6)">6 photos</button>
 
-<!-- FRAME -->
 <div id="frameBox">
 <h4>Choose Frame</h4>
 <div id="frameList"></div>
@@ -179,19 +194,15 @@ margin-top:6px;
 
 <hr>
 
-<!-- STICKERS RESTORED -->
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-
 <button onclick="addSticker('💖')">💖</button>
 <button onclick="addSticker('✨')">✨</button>
 <button onclick="addSticker('🎀')">🎀</button>
 <button onclick="addSticker('🐻')">🐻</button>
-
 <button onclick="addSticker('🌸')">🌸</button>
 <button onclick="addSticker('💫')">💫</button>
 <button onclick="addStickerImg('https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif')">🐱</button>
 <button onclick="addStickerImg('https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif')">🐱</button>
-
 </div>
 
 <hr>
@@ -235,7 +246,7 @@ let selectedFrame="none";
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* FRAME SYSTEM (UNCHANGED LOGIC) */
+/* FRAME SYSTEM FIXED */
 function setSession(n){
 
 sessionCount=n;
@@ -246,16 +257,28 @@ frameList.innerHTML="";
 let frames=[];
 
 if(n===2){
-frames=[{name:"2 Horizontal",type:"layout-2h"},{name:"2 Vertical",type:"layout-2v"}];
+frames=[
+{name:"2 Horizontal",type:"layout-2h"},
+{name:"2 Vertical",type:"layout-2v"}
+];
 }
+
 if(n===4){
-frames=[{name:"4 Grid",type:"layout-4"}];
+frames=[
+{name:"4 Grid",type:"layout-4"},
+{name:"4 Clean Grid",type:"layout-4"}
+];
 }
+
 if(n===6){
-frames=[{name:"6 Grid",type:"layout-6"}];
+frames=[
+{name:"6 Grid",type:"layout-6"},
+{name:"6 Strip",type:"layout-6"}
+];
 }
 
 frames.forEach(f=>{
+
 const div=document.createElement("div");
 div.className="frame-item";
 
@@ -266,13 +289,24 @@ div.innerHTML=`
 </div>
 `;
 
-div.onclick=()=>selectedFrame=f.type;
+div.onclick=()=>{
+
+selectedFrame=f.type;
+
+/* highlight active */
+document.querySelectorAll(".frame-item")
+.forEach(el=>el.classList.remove("active"));
+
+div.classList.add("active");
+
+console.log("Frame selected:", selectedFrame);
+};
 
 frameList.appendChild(div);
 });
 }
 
-/* STICKER RESTORED */
+/* STICKERS */
 function addSticker(t){
 
 const el=document.createElement('div');
@@ -295,7 +329,7 @@ el.appendChild(img);
 place(el);
 }
 
-/* DRAG LOGIC */
+/* DRAG */
 function place(el){
 
 el.style.left="120px";
