@@ -14,7 +14,7 @@ background:linear-gradient(135deg,#ffe4ec,#f3e8ff,#e6f7ff);
 overflow-x:hidden;
 }
 
-/* ================= NAV ================= */
+/* NAV */
 nav{
 position:sticky;
 top:0;
@@ -30,11 +30,7 @@ box-shadow:0 2px 20px rgba(0,0,0,.08);
 
 .logo{font-weight:bold}
 
-nav ul{
-display:flex;
-gap:18px;
-list-style:none;
-}
+nav ul{display:flex;gap:18px;list-style:none}
 
 nav li{position:relative}
 
@@ -46,42 +42,7 @@ padding:8px 10px;
 border-radius:10px;
 }
 
-nav a:hover{
-background:#ff5c8a;
-color:white;
-}
-
-.dropdown{
-position:absolute;
-top:38px;
-left:0;
-background:white;
-min-width:170px;
-border-radius:14px;
-box-shadow:0 10px 25px rgba(0,0,0,.15);
-opacity:0;
-visibility:hidden;
-transform:translateY(10px);
-transition:.2s;
-}
-
-nav li:hover .dropdown{
-opacity:1;
-visibility:visible;
-transform:translateY(0);
-}
-
-.dropdown a{
-display:block;
-padding:10px;
-}
-
-.dropdown a:hover{
-background:linear-gradient(90deg,#ff5c8a,#7b61ff);
-color:white;
-}
-
-/* ================= LAYOUT ================= */
+/* LAYOUT */
 .main{
 display:grid;
 grid-template-columns:260px 1fr 280px;
@@ -91,11 +52,7 @@ margin:18px auto;
 padding:0 10px;
 }
 
-@media(max-width:1000px){
-.main{grid-template-columns:1fr}
-}
-
-/* ================= SIDEBAR ================= */
+/* SIDEBAR */
 .sidebar{
 background:rgba(255,255,255,.6);
 backdrop-filter:blur(12px);
@@ -106,7 +63,7 @@ flex-direction:column;
 gap:10px;
 }
 
-/* sticker grid */
+/* STICKER GRID */
 .sticker-grid{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -121,16 +78,9 @@ font-size:18px;
 cursor:pointer;
 background:white;
 box-shadow:0 4px 10px rgba(0,0,0,.08);
-transition:.15s;
 }
 
-.sticker-btn:hover{
-transform:scale(1.1);
-background:linear-gradient(135deg,#ff5c8a,#7b61ff);
-color:white;
-}
-
-/* buttons */
+/* BUTTONS */
 button{
 border:none;
 padding:8px 10px;
@@ -144,7 +94,7 @@ font-size:13px;
 .stop{background:#ff3b3b;color:white}
 .reset{background:#7b61ff;color:white}
 
-/* ================= CAMERA ================= */
+/* CAMERA */
 .camera-box{
 position:relative;
 background:white;
@@ -153,12 +103,9 @@ overflow:hidden;
 box-shadow:0 10px 25px rgba(0,0,0,.12);
 }
 
-video{
-width:100%;
-display:block;
-transform-origin:center;
-}
+video{width:100%}
 
+/* LIVE */
 .live{
 position:absolute;
 top:8px;
@@ -172,30 +119,7 @@ border-radius:12px;
 font-size:11px;
 }
 
-.dot{
-width:7px;height:7px;
-background:red;
-border-radius:50%;
-animation:pulse 1s infinite;
-}
-
-@keyframes pulse{
-0%{transform:scale(1)}
-50%{transform:scale(1.6);opacity:.4}
-}
-
-/* zoom */
-.zoom-box{
-position:absolute;
-bottom:10px;
-left:10px;
-background:white;
-padding:8px;
-border-radius:10px;
-font-size:12px;
-}
-
-/* STICKER LAYER */
+/* STICKERS */
 #layer{
 position:absolute;
 top:0;
@@ -212,6 +136,11 @@ user-select:none;
 touch-action:none;
 }
 
+/* animated sticker */
+.sticker img{
+width:60px;
+}
+
 /* RIGHT PANEL */
 .panel{
 background:rgba(255,255,255,.6);
@@ -223,19 +152,43 @@ flex-direction:column;
 gap:10px;
 }
 
+/* GALLERY */
 .gallery{
 display:flex;
 flex-direction:column;
-gap:8px;
+gap:10px;
 }
 
-.gallery img{
+.img-wrap{
+position:relative;
+width:100%;
+}
+
+.img-wrap img{
 width:100%;
 border-radius:10px;
 cursor:pointer;
+display:block;
 }
 
-/* modal */
+.delete-btn{
+position:absolute;
+top:6px;
+right:6px;
+width:22px;
+height:22px;
+border-radius:50%;
+border:none;
+background:rgba(255(0,0,0,.8);
+color:white;
+font-size:12px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* MODAL */
 #modal{
 position:fixed;
 inset:0;
@@ -245,12 +198,9 @@ justify-content:center;
 align-items:center;
 }
 
-#modal img{
-max-width:80%;
-border-radius:12px;
-}
+#modal img{max-width:80%;border-radius:12px}
 
-/* countdown */
+/* COUNTDOWN */
 #countdown{
 text-align:center;
 font-size:42px;
@@ -264,56 +214,38 @@ margin-top:8px;
 
 <body>
 
-<!-- NAV -->
 <nav>
 <div class="logo">📸 Photobooth With Me</div>
-
-<ul>
-<li><a href="#">Trend</a>
-<div class="dropdown"><a>Pink</a><a>Retro</a><a>Neon</a></div>
-</li>
-<li><a href="#">Frames</a>
-<div class="dropdown"><a>Korean</a><a>Minimal</a></div>
-</li>
-<li><a href="#">Filters</a>
-<div class="dropdown"><a>Soft</a><a>Vintage</a></div>
-</li>
-</ul>
+<ul><li>Trend</li><li>Frames</li><li>Filters</li></ul>
 </nav>
 
-<!-- MAIN -->
 <div class="main">
 
 <!-- LEFT -->
 <div class="sidebar">
 
-<button onclick="setPhotos(2)">2 photos</button>
-<button onclick="setPhotos(4)">4 photos</button>
-<button onclick="setPhotos(6)">6 photos</button>
+<button onclick="setSession(2)">2 photos</button>
+<button onclick="setSession(4)">4 photos</button>
+<button onclick="setSession(6)">6 photos</button>
 
 <hr>
 
-<!-- STICKER GRID -->
 <div class="sticker-grid">
-<button class="sticker-btn" onclick="addSticker('💖')">💖</button>
-<button class="sticker-btn" onclick="addSticker('✨')">✨</button>
-<button class="sticker-btn" onclick="addSticker('🎀')">🎀</button>
-<button class="sticker-btn" onclick="addSticker('🐻')">🐻</button>
-<button class="sticker-btn" onclick="addSticker('🌸')">🌸</button>
-<button class="sticker-btn" onclick="addSticker('💫')">💫</button>
-<button class="sticker-btn" onclick="addSticker('🧸')">🧸</button>
-<button class="sticker-btn" onclick="addSticker('🍓')">🍓</button>
-<button class="sticker-btn" onclick="addSticker('🌷')">🌷</button>
-<button class="sticker-btn" onclick="addSticker('🔥')">🔥</button>
-<button class="sticker-btn" onclick="addSticker('🌈')">🌈</button>
-<button class="sticker-btn" onclick="addSticker('💎')">💎</button>
+<button onclick="addSticker('💖')">💖</button>
+<button onclick="addSticker('✨')">✨</button>
+<button onclick="addSticker('🎀')">🎀</button>
+<button onclick="addSticker('🐻')">🐻</button>
+<button onclick="addSticker('🌸')">🌸</button>
+<button onclick="addSticker('💫')">💫</button>
+<button onclick="addSticker('🧸')">🧸</button>
+<button onclick="addSticker('🍓')">🍓</button>
 </div>
 
 <hr>
 
-<button class="start" id="start">Start</button>
-<button class="stop" id="stop">Stop</button>
-<button class="reset" id="reset">Reset</button>
+<button class="start" onclick="start()">Start</button>
+<button class="stop" onclick="stop()">Stop</button>
+<button class="reset" onclick="resetAll()">Reset</button>
 
 </div>
 
@@ -322,15 +254,10 @@ margin-top:8px;
 
 <div class="camera-box">
 
-<div class="live"><div class="dot"></div> LIVE</div>
+<div class="live">🔴 LIVE</div>
 
 <video id="video" autoplay playsinline></video>
 <div id="layer"></div>
-
-<div class="zoom-box">
-Zoom
-<input type="range" id="zoom" min="1" max="2.5" step="0.01">
-</div>
 
 </div>
 
@@ -356,11 +283,10 @@ Zoom
 const video=document.getElementById('video');
 const layer=document.getElementById('layer');
 const gallery=document.getElementById('gallery');
-const zoom=document.getElementById('zoom');
 const modal=document.getElementById('modal');
 const modalImg=document.getElementById('modalImg');
 
-let photoCount=4;
+let sessionCount=4;
 let running=false;
 let stickers=[];
 
@@ -368,10 +294,8 @@ let stickers=[];
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* zoom */
-zoom.oninput=(e)=>{
-video.style.transform=`scale(${e.target.value})`;
-};
+/* session */
+function setSession(n){sessionCount=n}
 
 /* stickers */
 function addSticker(icon){
@@ -379,6 +303,12 @@ function addSticker(icon){
 const el=document.createElement('div');
 el.className='sticker';
 el.innerText=icon;
+
+place(el);
+}
+
+/* common sticker logic */
+function place(el){
 
 el.style.left="120px";
 el.style.top="120px";
@@ -392,30 +322,20 @@ el.addEventListener('pointerdown',(e)=>{
 drag=true;
 ox=e.clientX-el.offsetLeft;
 oy=e.clientY-el.offsetTop;
-el.setPointerCapture(e.pointerId);
 });
 
-el.addEventListener('pointermove',(e)=>{
+document.addEventListener('pointermove',(e)=>{
 if(!drag) return;
 el.style.left=(e.clientX-ox)+'px';
 el.style.top=(e.clientY-oy)+'px';
 });
 
-el.addEventListener('pointerup',()=>drag=false);
-
-/* resize */
-el.addEventListener('wheel',(e)=>{
-e.preventDefault();
-let s=el.dataset.s?parseFloat(el.dataset.s):1;
-s+=e.deltaY*-0.001;
-s=Math.max(0.5,Math.min(3,s));
-el.dataset.s=s;
-el.style.transform=`scale(${s})`;
-});
+document.addEventListener('pointerup',()=>drag=false);
 }
 
 /* capture */
 function capture(){
+
 const canvas=document.createElement('canvas');
 canvas.width=video.videoWidth;
 canvas.height=video.videoHeight;
@@ -425,6 +345,10 @@ ctx.drawImage(video,0,0);
 
 const url=canvas.toDataURL();
 
+/* gallery item */
+const wrap=document.createElement('div');
+wrap.className='img-wrap';
+
 const img=document.createElement('img');
 img.src=url;
 
@@ -433,17 +357,28 @@ modal.style.display='flex';
 modalImg.src=url;
 };
 
-gallery.appendChild(img);
+const del=document.createElement('button');
+del.className='delete-btn';
+del.innerText='×';
+
+del.onclick=(e)=>{
+e.stopPropagation();
+wrap.remove();
+};
+
+wrap.appendChild(img);
+wrap.appendChild(del);
+gallery.appendChild(wrap);
 }
 
-/* controls */
-document.getElementById('start').onclick=async()=>{
+/* start */
+async function start(){
+
 running=true;
-layer.innerHTML='';
+layer.innerHTML="";
 stickers=[];
 
-for(let i=0;i<photoCount;i++){
-if(!running) break;
+for(let i=0;i<sessionCount;i++){
 
 for(let c=3;c>0;c--){
 document.getElementById('countdown').innerText=c;
@@ -456,19 +391,21 @@ await new Promise(r=>setTimeout(r,600));
 }
 
 document.getElementById('countdown').innerText="";
-};
+}
 
-document.getElementById('stop').onclick=()=>running=false;
-
-document.getElementById('reset').onclick=()=>{
+/* stop */
+function stop(){
 running=false;
-layer.innerHTML='';
-stickers=[];
-gallery.innerHTML='';
-document.getElementById('countdown').innerText="";
-};
+}
 
-function setPhotos(n){photoCount=n}
+/* reset */
+function resetAll(){
+running=false;
+layer.innerHTML="";
+stickers=[];
+gallery.innerHTML="";
+document.getElementById('countdown').innerText="";
+}
 
 </script>
 
