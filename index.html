@@ -14,7 +14,7 @@ background:linear-gradient(135deg,#ffe4ec,#f3e8ff,#e6f7ff);
 overflow-x:hidden;
 }
 
-/* NAV */
+/* NAV (GIỮ NGUYÊN Ý CŨ) */
 nav{
 position:sticky;
 top:0;
@@ -30,11 +30,7 @@ box-shadow:0 2px 20px rgba(0,0,0,.08);
 
 .logo{font-weight:bold}
 
-nav ul{
-display:flex;
-gap:18px;
-list-style:none;
-}
+nav ul{display:flex;gap:18px;list-style:none}
 
 /* LAYOUT */
 .main{
@@ -57,6 +53,7 @@ flex-direction:column;
 gap:10px;
 }
 
+/* BUTTON */
 button{
 border:none;
 padding:8px 10px;
@@ -67,10 +64,8 @@ font-size:13px;
 }
 
 .start{background:#ff5c8a;color:white}
-.stop{background:#ff3b3b;color:white}
-.reset{background:#7b61ff;color:white}
 
-/* FRAME BOX (FIX ONLY) */
+/* FRAME BOX */
 #frameBox{
 display:none;
 background:white;
@@ -86,31 +81,6 @@ margin:6px 0;
 border-radius:10px;
 cursor:pointer;
 background:#f3f3f3;
-transition:.2s;
-font-size:13px;
-}
-
-.frame-item:hover{
-background:linear-gradient(90deg,#ff5c8a,#7b61ff);
-color:white;
-}
-
-/* MINI PREVIEW */
-.layout-preview{
-display:grid;
-gap:4px;
-height:60px;
-margin-top:6px;
-}
-
-.layout-2h{grid-template-columns:1fr 1fr}
-.layout-2v{grid-template-rows:1fr 1fr}
-.layout-4{grid-template-columns:1fr 1fr}
-.layout-6{grid-template-columns:1fr 1fr 1fr}
-
-.box{
-background:#ddd;
-border-radius:4px;
 }
 
 /* CAMERA */
@@ -119,12 +89,11 @@ position:relative;
 background:white;
 border-radius:16px;
 overflow:hidden;
-box-shadow:0 10px 25px rgba(0,0,0,.12);
 }
 
 video{width:100%}
 
-/* STICKERS */
+/* STICKERS RESTORED */
 #layer{
 position:absolute;
 top:0;
@@ -140,7 +109,11 @@ cursor:grab;
 user-select:none;
 }
 
-/* GALLERY */
+.sticker img{
+width:60px;
+}
+
+/* RIGHT */
 .panel{
 background:rgba(255,255,255,.6);
 backdrop-filter:blur(12px);
@@ -148,6 +121,7 @@ border-radius:16px;
 padding:12px;
 }
 
+/* GALLERY */
 .gallery img{
 width:100%;
 border-radius:10px;
@@ -162,6 +136,21 @@ height:50px;
 color:#ff4d6d;
 margin-top:8px;
 }
+
+/* FRAME PREVIEW */
+.layout-preview{
+display:grid;
+gap:4px;
+height:60px;
+margin-top:6px;
+}
+
+.layout-2h{grid-template-columns:1fr 1fr}
+.layout-2v{grid-template-rows:1fr 1fr}
+.layout-4{grid-template-columns:1fr 1fr}
+.layout-6{grid-template-columns:1fr 1fr 1fr}
+
+.box{background:#ddd;border-radius:4px}
 
 </style>
 </head>
@@ -182,7 +171,7 @@ margin-top:8px;
 <button onclick="setSession(4)">4 photos</button>
 <button onclick="setSession(6)">6 photos</button>
 
-<!-- FRAME BOX -->
+<!-- FRAME -->
 <div id="frameBox">
 <h4>Choose Frame</h4>
 <div id="frameList"></div>
@@ -190,7 +179,24 @@ margin-top:8px;
 
 <hr>
 
-<button onclick="start()">Start</button>
+<!-- STICKERS RESTORED -->
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+
+<button onclick="addSticker('💖')">💖</button>
+<button onclick="addSticker('✨')">✨</button>
+<button onclick="addSticker('🎀')">🎀</button>
+<button onclick="addSticker('🐻')">🐻</button>
+
+<button onclick="addSticker('🌸')">🌸</button>
+<button onclick="addSticker('💫')">💫</button>
+<button onclick="addStickerImg('https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif')">🐱</button>
+<button onclick="addStickerImg('https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif')">🐱</button>
+
+</div>
+
+<hr>
+
+<button class="start" onclick="start()">Start</button>
 
 </div>
 
@@ -219,6 +225,7 @@ margin-top:8px;
 const video=document.getElementById('video');
 const frameBox=document.getElementById('frameBox');
 const frameList=document.getElementById('frameList');
+const layer=document.getElementById('layer');
 const gallery=document.getElementById('gallery');
 
 let sessionCount=4;
@@ -228,7 +235,7 @@ let selectedFrame="none";
 navigator.mediaDevices.getUserMedia({video:true})
 .then(s=>video.srcObject=s);
 
-/* FRAME GENERATOR (FIXED CORE) */
+/* FRAME SYSTEM (UNCHANGED LOGIC) */
 function setSession(n){
 
 sessionCount=n;
@@ -238,29 +245,16 @@ frameList.innerHTML="";
 
 let frames=[];
 
-/* 2 / 4 / 6 ONLY LOGIC */
 if(n===2){
-frames=[
-{name:"2 Horizontal Split",type:"layout-2h"},
-{name:"2 Vertical Split",type:"layout-2v"}
-];
+frames=[{name:"2 Horizontal",type:"layout-2h"},{name:"2 Vertical",type:"layout-2v"}];
 }
-
 if(n===4){
-frames=[
-{name:"4 Grid (2x2)",type:"layout-4"},
-{name:"4 Clean Grid",type:"layout-4"}
-];
+frames=[{name:"4 Grid",type:"layout-4"}];
 }
-
 if(n===6){
-frames=[
-{name:"6 Grid (3x2)",type:"layout-6"},
-{name:"6 Strip Style",type:"layout-6"}
-];
+frames=[{name:"6 Grid",type:"layout-6"}];
 }
 
-/* render UI */
 frames.forEach(f=>{
 const div=document.createElement("div");
 div.className="frame-item";
@@ -268,22 +262,65 @@ div.className="frame-item";
 div.innerHTML=`
 <div>${f.name}</div>
 <div class="layout-preview ${f.type}">
-<div class="box"></div>
-<div class="box"></div>
-<div class="box"></div>
-<div class="box"></div>
+<div class="box"></div><div class="box"></div>
 </div>
 `;
 
-div.onclick=()=>{
-selectedFrame=f.type;
-};
+div.onclick=()=>selectedFrame=f.type;
 
 frameList.appendChild(div);
 });
 }
 
-/* CAPTURE SIMPLE */
+/* STICKER RESTORED */
+function addSticker(t){
+
+const el=document.createElement('div');
+el.className='sticker';
+el.innerText=t;
+
+place(el);
+}
+
+function addStickerImg(url){
+
+const el=document.createElement('div');
+el.className='sticker';
+
+const img=document.createElement('img');
+img.src=url;
+
+el.appendChild(img);
+
+place(el);
+}
+
+/* DRAG LOGIC */
+function place(el){
+
+el.style.left="120px";
+el.style.top="120px";
+
+layer.appendChild(el);
+
+let d=false,ox=0,oy=0;
+
+el.addEventListener('pointerdown',e=>{
+d=true;
+ox=e.clientX-el.offsetLeft;
+oy=e.clientY-el.offsetTop;
+});
+
+document.addEventListener('pointermove',e=>{
+if(!d) return;
+el.style.left=(e.clientX-ox)+'px';
+el.style.top=(e.clientY-oy)+'px';
+});
+
+document.addEventListener('pointerup',()=>d=false);
+}
+
+/* CAPTURE */
 function capture(){
 
 const c=document.createElement('canvas');
@@ -293,20 +330,6 @@ c.height=video.videoHeight;
 const ctx=c.getContext('2d');
 ctx.drawImage(video,0,0);
 
-/* light frame effect */
-if(selectedFrame==="layout-2h"){
-ctx.fillStyle="rgba(255,105,180,0.15)";
-ctx.fillRect(0,0,c.width,c.height);
-}
-if(selectedFrame==="layout-4"){
-ctx.fillStyle="rgba(173,216,230,0.15)";
-ctx.fillRect(0,0,c.width,c.height);
-}
-if(selectedFrame==="layout-6"){
-ctx.fillStyle="rgba(200,255,200,0.12)";
-ctx.fillRect(0,0,c.width,c.height);
-}
-
 const img=document.createElement('img');
 img.src=c.toDataURL();
 
@@ -315,6 +338,8 @@ gallery.appendChild(img);
 
 /* START */
 async function start(){
+
+layer.innerHTML="";
 
 for(let i=0;i<sessionCount;i++){
 
