@@ -14,14 +14,7 @@ background:linear-gradient(135deg,#ffe4ec,#f5e8ff,#e6f7ff);
 overflow-x:hidden;
 }
 
-nav{
-display:flex;
-justify-content:space-between;
-padding:14px 24px;
-background:rgba(255,255,255,.85);
-backdrop-filter:blur(10px);
-}
-
+/* LAYOUT */
 .main{
 display:grid;
 grid-template-columns:260px 1fr 260px;
@@ -61,18 +54,20 @@ overflow:hidden;
 aspect-ratio:3/4;
 }
 
+.zoom-frame{
+width:100%;
+height:100%;
+overflow:hidden;
+}
+
 video{
 width:100%;
 height:100%;
 object-fit:cover;
-transition:0.2s;
+transform-origin:center;
 }
 
-#layer{
-position:absolute;
-inset:0;
-}
-
+/* LIVE */
 .live{
 position:absolute;
 top:10px;
@@ -82,6 +77,7 @@ color:white;
 padding:4px 10px;
 border-radius:20px;
 font-size:12px;
+z-index:2;
 }
 
 /* ZOOM */
@@ -91,12 +87,27 @@ bottom:10px;
 left:10px;
 display:flex;
 gap:6px;
+z-index:3;
 }
 
 .zoom-controls button{
 padding:6px 10px;
 background:white;
 border-radius:8px;
+}
+
+/* STICKER */
+#layer{
+position:absolute;
+inset:0;
+z-index:2;
+}
+
+.sticker{
+position:absolute;
+font-size:30px;
+cursor:grab;
+user-select:none;
 }
 
 /* RIGHT PANEL */
@@ -117,14 +128,6 @@ width:100%;
 border-radius:10px;
 }
 
-/* STICKER */
-.sticker{
-position:absolute;
-font-size:30px;
-cursor:grab;
-user-select:none;
-}
-
 /* COUNTDOWN */
 #countdown{
 text-align:center;
@@ -132,21 +135,17 @@ font-size:40px;
 height:60px;
 }
 
-/* CLEAR BUTTON */
+/* CLEAR */
 .clear-btn{
-margin-top:10px;
 background:#222;
 color:white;
+margin-top:10px;
 }
 
 </style>
 </head>
 
 <body>
-
-<nav>
-<div><b>📸 Photobooth With Me</b></div>
-</nav>
 
 <div class="main">
 
@@ -159,13 +158,13 @@ color:white;
 
 <hr>
 
-<button onclick="addSticker('💖')">💖 Sticker</button>
+<button onclick="addSticker('💖')">💖</button>
+<button onclick="addSticker('✨')">✨</button>
 
 <hr>
 
 <button class="primary" onclick="start()">Start</button>
 <button class="secondary" onclick="stopCamera()">Stop</button>
-
 <button class="clear-btn" onclick="clearPreview()">Clear</button>
 
 </div>
@@ -177,13 +176,15 @@ color:white;
 
 <div class="live">LIVE</div>
 
+<div class="zoom-frame">
 <video id="video" autoplay playsinline></video>
+</div>
 
 <div id="layer"></div>
 
 <div class="zoom-controls">
-<button onclick="zoomIn()">＋</button>
-<button onclick="zoomOut()">－</button>
+<button onclick="zoomOut()">0.5x</button>
+<button onclick="zoomIn()">+</button>
 </div>
 
 </div>
@@ -205,7 +206,9 @@ color:white;
 let stream=null;
 let photos=[];
 let count=4;
-let zoomLevel=1;
+
+/* zoom: 0.5 = wide, 1 = normal, 2+ = zoom in */
+let zoomLevel = 1;
 
 const video=document.getElementById("video");
 const layer=document.getElementById("layer");
@@ -225,20 +228,25 @@ video.srcObject=null;
 }
 }
 
-/* ZOOM */
+/* ZOOM (iPhone-like logic) */
 function applyZoom(){
-video.style.transform=`scale(${zoomLevel})`;
+const scale = 1 / zoomLevel;
+video.style.transform = `scale(${scale})`;
+video.style.transition = "0.25s";
+
+document.getElementById("countdown").innerText =
+"Zoom: " + zoomLevel.toFixed(1) + "x";
 }
 
 function zoomIn(){
-zoomLevel+=0.1;
-if(zoomLevel>2.5)zoomLevel=2.5;
+zoomLevel += 0.1;
+if(zoomLevel > 2.5) zoomLevel = 2.5;
 applyZoom();
 }
 
 function zoomOut(){
-zoomLevel-=0.1;
-if(zoomLevel<1)zoomLevel=1;
+zoomLevel -= 0.1;
+if(zoomLevel < 0.5) zoomLevel = 0.5;
 applyZoom();
 }
 
