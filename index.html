@@ -15,7 +15,7 @@ min-height:100vh;
 color:#333;
 }
 
-/* NAV (GIỮ NGUYÊN STRUCTURE + UPGRADE STYLE) */
+/* ===== TOP NAV (NEW MODERN MENU) ===== */
 nav{
 position:sticky;
 top:0;
@@ -23,73 +23,79 @@ z-index:999;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:18px 40px;
-background:rgba(255,255,255,.85);
-backdrop-filter:blur(12px);
-box-shadow:0 2px 20px rgba(0,0,0,.08);
+padding:16px 40px;
+background:rgba(255,255,255,.7);
+backdrop-filter:blur(14px);
+border-bottom:1px solid rgba(255,255,255,.4);
 }
 
-.logo{font-size:20px;font-weight:bold}
+.logo{
+font-size:18px;
+font-weight:700;
+}
 
-nav ul{
+/* MENU WRAP */
+.menu{
 display:flex;
-gap:20px;
-list-style:none;
+gap:10px;
 }
 
-nav li{
+/* MENU ITEM */
+.menu-item{
 position:relative;
 }
 
-nav a{
-text-decoration:none;
-color:#333;
+.menu-btn{
+padding:10px 14px;
+border-radius:14px;
+cursor:pointer;
 font-weight:600;
-padding:8px 12px;
-border-radius:10px;
 transition:.2s;
+user-select:none;
 }
 
-nav a:hover{
-background:#ff5c8a;
+.menu-btn:hover{
+background:linear-gradient(90deg,#ff5c8a,#7b61ff);
 color:white;
+transform:translateY(-1px);
 }
 
-/* DROPDOWN MENU (GIỮ MENU CỦA BẠN + làm đẹp hơn) */
+/* DROPDOWN PANEL */
 .dropdown{
 position:absolute;
-top:40px;
+top:45px;
 left:0;
+min-width:210px;
 background:white;
-min-width:200px;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-opacity:0;
-visibility:hidden;
-transform:translateY(10px);
-transition:.2s;
+border-radius:16px;
+box-shadow:0 15px 35px rgba(0,0,0,.15);
 overflow:hidden;
+
+max-height:0;
+opacity:0;
+transform:translateY(10px);
+transition:.25s ease;
 }
 
-nav li:hover .dropdown{
+.menu-item:hover .dropdown{
+max-height:300px;
 opacity:1;
-visibility:visible;
 transform:translateY(0);
 }
 
-.dropdown a{
-display:block;
+/* DROPDOWN ITEM */
+.dropdown div{
 padding:12px 14px;
-color:#333;
+cursor:pointer;
 transition:.2s;
 }
 
-.dropdown a:hover{
+.dropdown div:hover{
 background:linear-gradient(90deg,#ff5c8a,#7b61ff);
 color:white;
 }
 
-/* MAIN */
+/* ===== MAIN LAYOUT ===== */
 .main{
 display:flex;
 gap:20px;
@@ -99,71 +105,36 @@ padding:20px;
 flex-wrap:wrap;
 }
 
-/* SIDEBAR UPGRADE (KOREAN STYLE) */
+/* ===== SETTINGS PANEL ===== */
 .sidebar{
 flex:1;
 min-width:260px;
-background:rgba(255,255,255,.6);
-backdrop-filter:blur(12px);
-border-radius:20px;
+background:rgba(255,255,255,.65);
+backdrop-filter:blur(14px);
+border-radius:22px;
 padding:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
-/* CUSTOM DROPDOWN */
-.dd{
-position:relative;
-margin-bottom:15px;
-}
-
-.dd-btn{
+/* CARD */
+.card{
 background:white;
+border-radius:16px;
 padding:12px;
-border-radius:14px;
-display:flex;
-justify-content:space-between;
-cursor:pointer;
-font-weight:500;
-box-shadow:0 5px 15px rgba(0,0,0,.05);
-transition:.2s;
+margin-bottom:12px;
+box-shadow:0 5px 15px rgba(0,0,0,.06);
 }
 
-.dd-btn:hover{
-transform:translateY(-1px);
+/* CUSTOM SELECT STYLE */
+select{
+width:100%;
+padding:10px;
+border-radius:12px;
+border:1px solid #eee;
+outline:none;
 }
 
-.dd-panel{
-position:absolute;
-top:55px;
-left:0;
-right:0;
-background:white;
-border-radius:14px;
-overflow:hidden;
-max-height:0;
-opacity:0;
-transition:.25s ease;
-box-shadow:0 10px 25px rgba(0,0,0,.12);
-z-index:5;
-}
-
-.dd.open .dd-panel{
-max-height:260px;
-opacity:1;
-}
-
-.dd-item{
-padding:12px;
-cursor:pointer;
-transition:.2s;
-}
-
-.dd-item:hover{
-background:linear-gradient(90deg,#ff5c8a,#7b61ff);
-color:white;
-}
-
-/* CAMERA */
+/* ===== CAMERA ===== */
 .camera{
 flex:2;
 min-width:500px;
@@ -172,7 +143,7 @@ min-width:500px;
 .camera-box{
 position:relative;
 background:white;
-border-radius:18px;
+border-radius:20px;
 overflow:hidden;
 box-shadow:0 10px 30px rgba(0,0,0,.1);
 }
@@ -188,8 +159,8 @@ position:absolute;
 top:10px;
 left:10px;
 display:flex;
-gap:6px;
 align-items:center;
+gap:6px;
 font-weight:bold;
 }
 
@@ -218,7 +189,7 @@ pointer-events:none;
 
 .sticker{
 position:absolute;
-font-size:30px;
+font-size:32px;
 pointer-events:auto;
 cursor:grab;
 user-select:none;
@@ -258,74 +229,92 @@ color:#ff4d6d;
 
 <body>
 
-<!-- NAV GIỮ NGUYÊN -->
+<!-- ===== NEW MENU ===== -->
 <nav>
+
 <div class="logo">📸 Photobooth With Me</div>
 
-<ul>
-<li>
-<a href="#home">Home</a>
-</li>
+<div class="menu">
 
-<li>
-<a href="#frames">Frames</a>
+<!-- TREND -->
+<div class="menu-item">
+<div class="menu-btn">Trend ✨</div>
 <div class="dropdown">
-<a>Korean Style</a>
-<a>Pink Cute</a>
-<a>Minimal White</a>
+<div>Pink Korean</div>
+<div>Neon Glow</div>
+<div>Retro Film</div>
+<div>Soft Pastel</div>
 </div>
-</li>
+</div>
 
-<li>
-<a href="#filters">Filters</a>
+<!-- FRAMES -->
+<div class="menu-item">
+<div class="menu-btn">Frames 🖼</div>
 <div class="dropdown">
-<a>Soft Pink</a>
-<a>Vintage</a>
-<a>B&W</a>
+<div>Classic Strip</div>
+<div>Korean Booth</div>
+<div>Birthday Cute</div>
+<div>Minimal White</div>
 </div>
-</li>
+</div>
 
-<li>
-<a href="#gallery">Gallery</a>
+<!-- FILTERS -->
+<div class="menu-item">
+<div class="menu-btn">Filters 🎨</div>
 <div class="dropdown">
-<a>Saved Photos</a>
-<a>Trending</a>
+<div>Soft Pink</div>
+<div>Vintage</div>
+<div>Black & White</div>
+<div>Warm Glow</div>
 </div>
-</li>
-</ul>
+</div>
+
+<!-- GALLERY -->
+<div class="menu-item">
+<div class="menu-btn">Gallery 📷</div>
+<div class="dropdown">
+<div>My Photos</div>
+<div>Saved Strips</div>
+<div>Trending</div>
+</div>
+</div>
+
+</div>
 </nav>
 
+<!-- ===== MAIN ===== -->
 <div class="main">
 
 <!-- SETTINGS -->
 <div class="sidebar">
 
-<div class="dd" id="photoDD">
-<div class="dd-btn" onclick="toggle('photoDD')">Photos ▾</div>
-<div class="dd-panel">
-<div class="dd-item" onclick="setPhotos(2)">2 Photos</div>
-<div class="dd-item" onclick="setPhotos(4)">4 Photos</div>
-<div class="dd-item" onclick="setPhotos(6)">6 Photos</div>
-</div>
-</div>
-
-<div class="dd" id="filterDD">
-<div class="dd-btn" onclick="toggle('filterDD')">Filter ▾</div>
-<div class="dd-panel">
-<div class="dd-item" onclick="setFilter('none')">Normal</div>
-<div class="dd-item" onclick="setFilter('grayscale(1)')">B&W</div>
-<div class="dd-item" onclick="setFilter('sepia(1)')">Vintage</div>
-</div>
+<div class="card">
+<label>Photos</label>
+<select id="photoCount">
+<option value="2">2 Photos</option>
+<option value="4" selected>4 Photos</option>
+<option value="6">6 Photos</option>
+</select>
 </div>
 
-<div class="dd" id="stickerDD">
-<div class="dd-btn" onclick="toggle('stickerDD')">Sticker ▾</div>
-<div class="dd-panel">
-<div class="dd-item" onclick="addSticker('💖')">💖 Heart</div>
-<div class="dd-item" onclick="addSticker('✨')">✨ Sparkle</div>
-<div class="dd-item" onclick="addSticker('🎀')">🎀 Ribbon</div>
-<div class="dd-item" onclick="addSticker('🐻')">🐻 Bear</div>
+<div class="card">
+<label>Filter</label>
+<select id="filter">
+<option value="none">Normal</option>
+<option value="grayscale(1)">B&W</option>
+<option value="sepia(1)">Vintage</option>
+</select>
 </div>
+
+<div class="card">
+<label>Sticker</label>
+<select id="stickerSelect">
+<option value="💖">💖 Heart</option>
+<option value="✨">✨ Sparkle</option>
+<option value="🎀">🎀 Ribbon</option>
+<option value="🐻">🐻 Bear</option>
+</select>
+<button onclick="addStickerFromSelect()" style="margin-top:10px;width:100%">Add Sticker</button>
 </div>
 
 </div>
@@ -368,23 +357,24 @@ let stickers=[];
 
 /* CAMERA */
 navigator.mediaDevices.getUserMedia({video:true})
-.then(s=>video.srcObject=s);
-
-/* DROPDOWN */
-function toggle(id){
-document.getElementById(id).classList.toggle('open');
-}
+.then(stream=>video.srcObject=stream);
 
 /* SETTINGS */
-function setPhotos(n){photoCount=n;}
-function setFilter(f){video.style.filter=f;}
+document.getElementById('photoCount').onchange=(e)=>{
+photoCount=parseInt(e.target.value);
+};
+
+document.getElementById('filter').onchange=(e)=>{
+video.style.filter=e.target.value;
+};
 
 /* STICKER */
-function addSticker(icon){
+function addStickerFromSelect(){
+const value=document.getElementById('stickerSelect').value;
 
 const s=document.createElement('div');
 s.className='sticker';
-s.innerText=icon;
+s.innerText=value;
 s.style.left="120px";
 s.style.top="120px";
 
@@ -415,7 +405,6 @@ const ctx=canvas.getContext('2d');
 ctx.filter=getComputedStyle(video).filter;
 ctx.drawImage(video,0,0);
 
-/* draw stickers */
 stickers.forEach(st=>{
 ctx.font="40px Arial";
 ctx.fillText(st.innerText,
